@@ -1,4 +1,4 @@
 {
-  "cwd": "dir",
-  "args": []
+  "args": [],
+  "create_dirs": ["d/c"]
 }

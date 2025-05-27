@@ -4,12 +4,16 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
+anyhow = "1.0.98"
 
 [dev-dependencies]
 assert_cmd = { version = "2.0.17", features = ["color-auto"] }
+copy_dir = "0.1.3"
 fixtures = "1.0.2"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+tempdir = "0.3.7"
+uuid = { version = "1.17.0", features = ["v4"] }
 
 [build-dependencies]
 fixtures = "1.0.2"
