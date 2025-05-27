@@ -1,0 +1,15 @@
+[package]
+name = "riptree"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+
+[dev-dependencies]
+assert_cmd = { version = "2.0.17", features = ["color-auto"] }
+fixtures = "1.0.2"
+
+[build-dependencies]
+fixtures = "1.0.2"
