@@ -8,13 +8,13 @@ fn main() -> anyhow::Result<()> {
     tree.print(&mut stats)?;
     println!("");
 
-    let files = stats.files();
-    let dirs = match (stats.dirs(), files) {
-        (0, 0) => 0,
-        (dirs, _) => dirs + 1,
+    match (stats.dirs(), stats.files()) {
+        (0, 0) => println!("0 directories, 0 files"),
+        (0, 1) => println!("1 directory, 1 file"),
+        (dirs, 1) => println!("{} directories, 1 file", dirs + 1),
+        (0, files) => println!("1 directory, {files} files"),
+        (dirs, files) => println!("{} directories, {files} files", dirs + 1),
     };
-
-    println!("{dirs} directories, {files} files");
 
     Ok(())
 }

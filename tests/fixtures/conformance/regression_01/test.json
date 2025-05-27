@@ -1,0 +1,4 @@
+{
+  "comment": "Should use singular for directory and file when there is only one",
+  "args": ["-a"]
+}
