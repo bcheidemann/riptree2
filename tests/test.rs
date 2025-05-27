@@ -16,7 +16,7 @@ struct TestDescription {
     create_dirs: Option<Vec<PathBuf>>,
 }
 
-#[fixtures(["tests/fixtures/conformance/*"])]
+#[fixtures(["tests/fixtures/conformance/*", "!*.skip"])]
 fn test(dir: &Path) {
     let test_description: TestDescription = {
         let path = dir.join("test.json");
@@ -74,3 +74,7 @@ fn test(dir: &Path) {
         .stdout(reference_stdout)
         .stderr(reference_stderr);
 }
+
+#[fixtures(["tests/fixtures/conformance/*.skip"])]
+#[ignore]
+fn skipped_test(_: &Path) {}
