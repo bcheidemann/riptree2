@@ -7,7 +7,14 @@ fn main() -> anyhow::Result<()> {
     println!("{}", tree.root().to_string_lossy());
     tree.print(&mut stats)?;
     println!("");
-    println!("{} directories, {} files", stats.dirs() + 1, stats.files());
+
+    let files = stats.files();
+    let dirs = match (stats.dirs(), files) {
+        (0, 0) => 0,
+        (dirs, _) => dirs + 1,
+    };
+
+    println!("{dirs} directories, {files} files");
 
     Ok(())
 }

@@ -27,16 +27,20 @@ fn test(dir: &Path) {
     let dir_template = dir.join("dir_template");
     let temp_working_dir = std::env::temp_dir().join(Uuid::new_v4().to_string());
 
-    let errors = copy_dir::copy_dir(&dir_template, &temp_working_dir).unwrap();
-    if !errors.is_empty() {
-        let errors = errors
-            .iter()
-            .enumerate()
-            .map(|(idx, error)| format!("[{idx}] {error}"))
-            .collect::<Vec<_>>()
-            .join("\n");
-        panic!("Errors:\n\n{errors}");
+    if dir_template.exists() {
+        let errors = copy_dir::copy_dir(&dir_template, &temp_working_dir).unwrap();
+        if !errors.is_empty() {
+            let errors = errors
+                .iter()
+                .enumerate()
+                .map(|(idx, error)| format!("[{idx}] {error}"))
+                .collect::<Vec<_>>()
+                .join("\n");
+            panic!("Errors:\n\n{errors}");
+        }
     }
+
+    std::fs::create_dir_all(&temp_working_dir).unwrap();
 
     for dir in test_description.create_dirs.unwrap_or(vec![]) {
         let dir = temp_working_dir.join(dir);
