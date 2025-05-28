@@ -1,6 +1,6 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use ignore::gitignore::{self, Gitignore, GitignoreBuilder};
+use ignore::gitignore::{Gitignore, GitignoreBuilder};
 
 pub struct IgnoreDir<'ignore> {
     parent: Option<&'ignore IgnoreDir<'ignore>>,
@@ -14,7 +14,7 @@ impl Default for IgnoreDir<'_> {
 }
 
 impl<'ignore> IgnoreDir<'ignore> {
-    pub(crate) fn new(dir: &PathBuf) -> Self {
+    pub(crate) fn new(dir: &Path) -> Self {
         let global_gitignore = match GitignoreBuilder::new("").build_global() {
             (_, Some(err)) => panic!("{err}"),
             (gitignore, None) => gitignore,

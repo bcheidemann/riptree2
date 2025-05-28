@@ -114,22 +114,22 @@ impl<'tree> Tree<'tree> {
             .filter(|entry| {
                 entry
                     .as_ref()
-                    .map(|entry| self.filter.include(&entry, &self.options))
+                    .map(|entry| self.filter.include(entry, &self.options))
                     .unwrap_or(false)
             })
             .collect::<Vec<_>>();
 
         // Don't ask... for some reason tree counts the root dir, but only if it
         // is not empty.
-        if self.depth > 0 || entries.len() > 0 {
+        if self.depth > 0 || !entries.is_empty() {
             stats.dirs += 1;
         }
 
         entries.sort_by(|a, b| match (a, b) {
-            (&Ok(ref a), &Ok(ref b)) => (self.options.sorter)(a, b),
-            (&Err(_), &Err(_)) => Ordering::Equal,
-            (&Ok(_), &Err(_)) => Ordering::Greater,
-            (&Err(_), &Ok(_)) => Ordering::Less,
+            (Ok(a), Ok(b)) => (self.options.sorter)(a, b),
+            (Err(_), Err(_)) => Ordering::Equal,
+            (Ok(_), Err(_)) => Ordering::Greater,
+            (Err(_), Ok(_)) => Ordering::Less,
         });
 
         if let Some((last_entry, leading_entries)) = entries.split_last() {
@@ -137,7 +137,7 @@ impl<'tree> Tree<'tree> {
                 let entry = entry.as_ref().unwrap();
                 self.write_entry(w, entry, false, stats)?;
             }
-            self.write_entry(w, &last_entry.as_ref().unwrap(), true, stats)?;
+            self.write_entry(w, last_entry.as_ref().unwrap(), true, stats)?;
         }
 
         Ok(())

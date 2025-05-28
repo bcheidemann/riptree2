@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, fs::DirEntry};
 
 pub fn default_sorter(a: &DirEntry, b: &DirEntry) -> Ordering {
-    return a.file_name().cmp(&b.file_name());
+    a.file_name().cmp(&b.file_name())
 
     // Folders last
     // match (

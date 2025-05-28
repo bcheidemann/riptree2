@@ -1,4 +1,4 @@
-use std::{fs::DirEntry, path::PathBuf};
+use std::{fs::DirEntry, path::Path};
 
 use crate::{ignore::IgnoreDir, options::TreeOptions};
 
@@ -8,7 +8,7 @@ pub struct TreeFilter<'filter> {
 }
 
 impl<'filter> TreeFilter<'filter> {
-    pub(crate) fn new(dir: &PathBuf) -> Self {
+    pub(crate) fn new(dir: &Path) -> Self {
         Self {
             ignore_dir: IgnoreDir::new(dir),
         }
