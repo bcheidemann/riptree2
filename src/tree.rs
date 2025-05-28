@@ -28,15 +28,15 @@ impl TreeStats {
     }
 }
 
-pub struct Tree {
-    filter: TreeFilter,
+pub struct Tree<'tree> {
+    filter: TreeFilter<'tree>,
     options: Arc<TreeOptions>,
     depth: usize,
     prefix: String,
     root: PathBuf,
 }
 
-impl Default for Tree {
+impl Default for Tree<'_> {
     fn default() -> Self {
         Self {
             filter: TreeFilter::default(),
@@ -48,10 +48,10 @@ impl Default for Tree {
     }
 }
 
-impl Tree {
+impl<'tree> Tree<'tree> {
     pub fn new(options: TreeOptions, root: PathBuf) -> Self {
         Self {
-            filter: TreeFilter::default(),
+            filter: TreeFilter::new(&root),
             options: options.into(),
             depth: 0,
             prefix: "".to_string(),
@@ -63,7 +63,7 @@ impl Tree {
         &self.root
     }
 
-    fn enter_dir(&self, dir: &DirEntry, is_last: bool) -> Self {
+    fn enter_dir(&'tree self, dir: &DirEntry, is_last: bool) -> Self {
         let new_prefix = if is_last { "    " } else { "│   " };
         Tree {
             filter: self.filter.enter_dir(dir, &self.options),

@@ -1,13 +1,23 @@
-use std::fs::DirEntry;
+use std::{fs::DirEntry, path::PathBuf};
 
-use crate::options::TreeOptions;
+use crate::{ignore::IgnoreDir, options::TreeOptions};
 
-#[derive(Clone, Default)]
-pub struct TreeFilter;
+#[derive(Default)]
+pub struct TreeFilter<'filter> {
+    ignore_dir: IgnoreDir<'filter>,
+}
 
-impl TreeFilter {
-    pub(crate) fn enter_dir(&self, _dir: &DirEntry, _options: &TreeOptions) -> Self {
-        self.clone()
+impl<'filter> TreeFilter<'filter> {
+    pub(crate) fn new(dir: &PathBuf) -> Self {
+        Self {
+            ignore_dir: IgnoreDir::new(dir),
+        }
+    }
+
+    pub(crate) fn enter_dir(&'filter self, dir: &DirEntry, _options: &TreeOptions) -> Self {
+        Self {
+            ignore_dir: self.ignore_dir.enter_dir(&dir.path()),
+        }
     }
 
     pub(crate) fn include(&self, entry: &DirEntry, options: &TreeOptions) -> bool {
@@ -17,6 +27,13 @@ impl TreeFilter {
                     return false;
                 }
             }
+        }
+
+        if !self
+            .ignore_dir
+            .include(&entry.path(), entry.file_type().unwrap().is_dir())
+        {
+            return false;
         }
 
         true

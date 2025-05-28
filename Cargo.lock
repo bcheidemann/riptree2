@@ -474,6 +474,7 @@ dependencies = [
  "clap",
  "copy_dir",
  "fixtures",
+ "ignore",
  "pretty_assertions",
  "serde",
  "serde_json",
