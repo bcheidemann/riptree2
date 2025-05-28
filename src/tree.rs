@@ -36,27 +36,15 @@ pub struct Tree<'tree> {
     root: PathBuf,
 }
 
-impl Default for Tree<'_> {
-    fn default() -> Self {
-        Self {
-            filter: TreeFilter::default(),
-            options: Arc::new(TreeOptions::default()),
-            depth: 0,
-            prefix: "".to_string(),
-            root: ".".into(),
-        }
-    }
-}
-
 impl<'tree> Tree<'tree> {
-    pub fn new(root: PathBuf, options: TreeOptions) -> Self {
-        Self {
-            filter: TreeFilter::new(&root, &options),
+    pub fn new(root: PathBuf, options: TreeOptions) -> anyhow::Result<Self> {
+        Ok(Self {
+            filter: TreeFilter::new(&root, &options)?,
             options: options.into(),
             depth: 0,
             prefix: "".to_string(),
             root,
-        }
+        })
     }
 
     pub fn root(&self) -> &Path {

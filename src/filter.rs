@@ -2,20 +2,19 @@ use std::{fs::DirEntry, path::Path};
 
 use crate::{ignore::IgnoreDir, options::TreeOptions};
 
-#[derive(Default)]
 pub struct TreeFilter<'filter> {
     ignore_dir: Option<IgnoreDir<'filter>>,
 }
 
 impl<'filter> TreeFilter<'filter> {
-    pub(crate) fn new(dir: &Path, options: &TreeOptions) -> Self {
-        Self {
+    pub(crate) fn new(dir: &Path, options: &TreeOptions) -> anyhow::Result<Self> {
+        Ok(Self {
             ignore_dir: if options.respect_gitignore {
-                Some(IgnoreDir::new(dir))
+                Some(IgnoreDir::new(dir)?)
             } else {
                 None
             },
-        }
+        })
     }
 
     pub(crate) fn enter_dir(&'filter self, dir: &DirEntry, _options: &TreeOptions) -> Self {

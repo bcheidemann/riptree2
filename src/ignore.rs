@@ -1,5 +1,6 @@
 use std::path::{Path, PathBuf};
 
+use anyhow::Context;
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 
 pub struct IgnoreDir<'ignore> {
@@ -7,30 +8,29 @@ pub struct IgnoreDir<'ignore> {
     gitignores: Vec<Gitignore>,
 }
 
-impl Default for IgnoreDir<'_> {
-    fn default() -> Self {
-        Self::new(&PathBuf::from(""))
-    }
-}
-
 impl<'ignore> IgnoreDir<'ignore> {
-    pub(crate) fn new(dir: &Path) -> Self {
+    pub(crate) fn new(dir: &Path) -> anyhow::Result<Self> {
         let global_gitignore = match GitignoreBuilder::new("").build_global() {
             (_, Some(err)) => panic!("{err}"),
             (gitignore, None) => gitignore,
         };
         let mut gitignores = vec![global_gitignore];
 
-        let canonicalized_root = dir.canonicalize().unwrap();
+        let canonicalized_root = dir.canonicalize().with_context(|| {
+            format!(
+                "Failed to canonicalize directory ({})",
+                dir.to_string_lossy(),
+            )
+        })?;
         let mut path_components = canonicalized_root.components();
 
         let mut current_dir = if let Some(root) = path_components.next() {
             PathBuf::from(root.as_os_str())
         } else {
-            return Self {
+            return Ok(Self {
                 parent: None,
                 gitignores,
-            };
+            });
         };
 
         for path_component in path_components {
@@ -48,10 +48,10 @@ impl<'ignore> IgnoreDir<'ignore> {
         // Reverse so the highest priority .gitignore is first
         gitignores.reverse();
 
-        Self {
+        Ok(Self {
             parent: None,
             gitignores,
-        }
+        })
     }
 
     pub(crate) fn enter_dir(&'ignore self, dir: &PathBuf) -> Self {
