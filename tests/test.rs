@@ -73,7 +73,7 @@ fn test(dir: &Path) {
     )
     .unwrap();
 
-    let sut_output = Command::cargo_bin(env!("CARGO_PKG_NAME"))
+    let sut_output = Command::cargo_bin("rt")
         .unwrap()
         .current_dir(&temp_working_dir)
         .args(&test_description.args)
