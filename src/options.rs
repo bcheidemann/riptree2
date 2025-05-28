@@ -1,16 +1,16 @@
 use std::{cmp::Ordering, fs::DirEntry};
 
-use crate::{args::TreeArgs, filter::TreeFilter, sorter::default_sorter};
+use crate::{args::TreeArgs, sorter::default_sorter};
 
 pub struct TreeOptions {
-    pub filter: TreeFilter,
+    pub show_hidden_files: bool,
     pub sorter: fn(&DirEntry, &DirEntry) -> Ordering,
 }
 
 impl Default for TreeOptions {
     fn default() -> Self {
         Self {
-            filter: TreeFilter::default(),
+            show_hidden_files: false,
             sorter: default_sorter,
         }
     }
@@ -19,9 +19,7 @@ impl Default for TreeOptions {
 impl From<&TreeArgs> for TreeOptions {
     fn from(args: &TreeArgs) -> Self {
         Self {
-            filter: TreeFilter {
-                show_hidden_files: args.show_hidden_files,
-            },
+            show_hidden_files: args.show_hidden_files,
             sorter: default_sorter,
         }
     }

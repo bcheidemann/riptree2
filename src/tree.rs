@@ -8,7 +8,7 @@ use std::{
 
 use anyhow::Context as _;
 
-use crate::options::TreeOptions;
+use crate::{filter::TreeFilter, options::TreeOptions};
 
 #[derive(Default)]
 pub struct TreeStats {
@@ -29,6 +29,7 @@ impl TreeStats {
 }
 
 pub struct Tree {
+    filter: TreeFilter,
     options: Arc<TreeOptions>,
     depth: usize,
     prefix: String,
@@ -38,6 +39,7 @@ pub struct Tree {
 impl Default for Tree {
     fn default() -> Self {
         Self {
+            filter: TreeFilter::default(),
             options: Arc::new(TreeOptions::default()),
             depth: 0,
             prefix: "".to_string(),
@@ -49,6 +51,7 @@ impl Default for Tree {
 impl Tree {
     pub fn new(options: TreeOptions, root: PathBuf) -> Self {
         Self {
+            filter: TreeFilter::default(),
             options: options.into(),
             depth: 0,
             prefix: "".to_string(),
@@ -63,6 +66,7 @@ impl Tree {
     fn enter_dir(&self, dir: &DirEntry, is_last: bool) -> Self {
         let new_prefix = if is_last { "    " } else { "│   " };
         Tree {
+            filter: self.filter.enter_dir(dir, &self.options),
             options: self.options.clone(),
             depth: self.depth + 1,
             prefix: format!("{}{}", self.prefix, new_prefix),
@@ -110,7 +114,7 @@ impl Tree {
             .filter(|entry| {
                 entry
                     .as_ref()
-                    .map(|entry| self.options.filter.include(&entry))
+                    .map(|entry| self.filter.include(&entry, &self.options))
                     .unwrap_or(false)
             })
             .collect::<Vec<_>>();
