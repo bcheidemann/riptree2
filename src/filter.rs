@@ -17,12 +17,17 @@ impl<'filter> TreeFilter<'filter> {
         })
     }
 
-    pub(crate) fn enter_dir(&'filter self, dir: &DirEntry, _options: &TreeOptions) -> Self {
-        Self {
-            ignore_dir: self
-                .ignore_dir
-                .as_ref()
-                .map(|ignore_dir| ignore_dir.enter_dir(&dir.path())),
+    pub(crate) fn enter_dir(
+        &'filter self,
+        dir: &DirEntry,
+        _options: &TreeOptions,
+    ) -> anyhow::Result<Self> {
+        if let Some(ignore_dir) = &self.ignore_dir {
+            Ok(Self {
+                ignore_dir: Some(ignore_dir.enter_dir(&dir.path())?),
+            })
+        } else {
+            Ok(Self { ignore_dir: None })
         }
     }
 

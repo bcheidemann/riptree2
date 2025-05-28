@@ -38,11 +38,18 @@ impl<'ignore> IgnoreDir<'ignore> {
             let mut builder = GitignoreBuilder::new(&current_dir);
             let gitignore_path = current_dir.join(".gitignore");
             if gitignore_path.exists() {
-                if let Some(err) = builder.add(gitignore_path) {
-                    panic!("{err}");
+                if let Some(err) = builder.add(&gitignore_path) {
+                    return Err(err).context(format!(
+                        "Failed to load {}",
+                        gitignore_path.to_string_lossy()
+                    ));
                 }
             }
-            gitignores.push(builder.build().unwrap());
+            gitignores.push(
+                builder.build().with_context(|| {
+                    format!("Failed to load {}", gitignore_path.to_string_lossy())
+                })?,
+            );
         }
 
         // Reverse so the highest priority .gitignore is first
@@ -54,22 +61,28 @@ impl<'ignore> IgnoreDir<'ignore> {
         })
     }
 
-    pub(crate) fn enter_dir(&'ignore self, dir: &PathBuf) -> Self {
+    pub(crate) fn enter_dir(&'ignore self, dir: &PathBuf) -> anyhow::Result<Self> {
         let gitignore_path = dir.join(".gitignore");
-        let gitignores = if gitignore_path.exists() {
-            let mut builder = GitignoreBuilder::new(dir);
-            if let Some(err) = builder.add(gitignore_path) {
-                panic!("{err}");
-            }
-            vec![builder.build().unwrap()]
-        } else {
-            vec![]
-        };
+        let gitignores =
+            if gitignore_path.exists() {
+                let mut builder = GitignoreBuilder::new(dir);
+                if let Some(err) = builder.add(&gitignore_path) {
+                    return Err(err).context(format!(
+                        "Failed to load {}",
+                        gitignore_path.to_string_lossy()
+                    ));
+                }
+                vec![builder.build().with_context(|| {
+                    format!("Failed to load {}", gitignore_path.to_string_lossy())
+                })?]
+            } else {
+                vec![]
+            };
 
-        Self {
+        Ok(Self {
             parent: Some(self),
             gitignores,
-        }
+        })
     }
 
     pub(crate) fn include(&self, path: &PathBuf, is_dir: bool) -> bool {
