@@ -1,7 +1,22 @@
 [package]
-name = "riptree"
+name = "riptree2"
 version = "0.1.0"
 edition = "2024"
+authors = ["Ben Heidemann <ben@heidemann.dev>"]
+description = """
+riptree is a Rust rewrite of the Unix tree command. It aims to be a drop in
+replacement (`alias tree="rt --compat"`) with some quality of life improvements,
+such as automatically respecting ignore files.
+"""
+documentation = "https://github.com/bcheidemann/riptree"
+homepage = "https://github.com/bcheidemann/riptree"
+repository = "https://github.com/bcheidemann/riptree"
+keywords = ["tree", "filesystem", "tool"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+path = "src/main.rs"
+name = "rt"
 
 [dependencies]
 anyhow = "1.0.98"
