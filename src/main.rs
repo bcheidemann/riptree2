@@ -1,5 +1,5 @@
 use clap::Parser as _;
-use riptree::{
+use riptree2::{
     args::TreeArgs,
     options::TreeOptions,
     tree::{Tree, TreeStats},
