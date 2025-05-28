@@ -49,9 +49,9 @@ impl Default for Tree<'_> {
 }
 
 impl<'tree> Tree<'tree> {
-    pub fn new(options: TreeOptions, root: PathBuf) -> Self {
+    pub fn new(root: PathBuf, options: TreeOptions) -> Self {
         Self {
-            filter: TreeFilter::new(&root),
+            filter: TreeFilter::new(&root, &options),
             options: options.into(),
             depth: 0,
             prefix: "".to_string(),

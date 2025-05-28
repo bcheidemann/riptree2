@@ -4,19 +4,26 @@ use crate::{ignore::IgnoreDir, options::TreeOptions};
 
 #[derive(Default)]
 pub struct TreeFilter<'filter> {
-    ignore_dir: IgnoreDir<'filter>,
+    ignore_dir: Option<IgnoreDir<'filter>>,
 }
 
 impl<'filter> TreeFilter<'filter> {
-    pub(crate) fn new(dir: &Path) -> Self {
+    pub(crate) fn new(dir: &Path, options: &TreeOptions) -> Self {
         Self {
-            ignore_dir: IgnoreDir::new(dir),
+            ignore_dir: if options.respect_gitignore {
+                Some(IgnoreDir::new(dir))
+            } else {
+                None
+            },
         }
     }
 
     pub(crate) fn enter_dir(&'filter self, dir: &DirEntry, _options: &TreeOptions) -> Self {
         Self {
-            ignore_dir: self.ignore_dir.enter_dir(&dir.path()),
+            ignore_dir: self
+                .ignore_dir
+                .as_ref()
+                .map(|ignore_dir| ignore_dir.enter_dir(&dir.path())),
         }
     }
 
@@ -31,7 +38,11 @@ impl<'filter> TreeFilter<'filter> {
 
         if !self
             .ignore_dir
-            .include(&entry.path(), entry.file_type().unwrap().is_dir())
+            .as_ref()
+            .map(|ignore_dir| {
+                ignore_dir.include(&entry.path(), entry.file_type().unwrap().is_dir())
+            })
+            .unwrap_or(true)
         {
             return false;
         }

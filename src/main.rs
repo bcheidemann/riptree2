@@ -17,7 +17,7 @@ fn main() -> anyhow::Result<()> {
     };
 
     for root in &roots {
-        let tree = Tree::new(TreeOptions::from(&args), root.clone().into());
+        let tree = Tree::new(root.clone().into(), TreeOptions::from(&args));
         println!("{root}");
         tree.print(&mut stats)?;
     }
