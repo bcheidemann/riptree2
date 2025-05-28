@@ -30,6 +30,7 @@ impl TreeStats {
 
 pub struct Tree {
     options: Arc<TreeOptions>,
+    depth: usize,
     prefix: String,
     root: PathBuf,
 }
@@ -38,6 +39,7 @@ impl Default for Tree {
     fn default() -> Self {
         Self {
             options: Arc::new(TreeOptions::default()),
+            depth: 0,
             prefix: "".to_string(),
             root: ".".into(),
         }
@@ -48,6 +50,7 @@ impl Tree {
     pub fn new(options: TreeOptions, root: PathBuf) -> Self {
         Self {
             options: options.into(),
+            depth: 0,
             prefix: "".to_string(),
             root,
         }
@@ -61,6 +64,7 @@ impl Tree {
         let new_prefix = if is_last { "    " } else { "│   " };
         Tree {
             options: self.options.clone(),
+            depth: self.depth + 1,
             prefix: format!("{}{}", self.prefix, new_prefix),
             root: dir.path(),
         }
@@ -92,7 +96,6 @@ impl Tree {
         result.context("Failed to write entry")?;
 
         if entry.file_type().unwrap().is_dir() {
-            stats.dirs += 1;
             self.enter_dir(entry, is_last).write(w, stats)?;
         } else {
             stats.files += 1;
@@ -111,6 +114,12 @@ impl Tree {
                     .unwrap_or(false)
             })
             .collect::<Vec<_>>();
+
+        // Don't ask... for some reason tree counts the root dir, but only if it
+        // is not empty.
+        if self.depth > 0 || entries.len() > 0 {
+            stats.dirs += 1;
+        }
 
         entries.sort_by(|a, b| match (a, b) {
             (&Ok(ref a), &Ok(ref b)) => (self.options.sorter)(a, b),

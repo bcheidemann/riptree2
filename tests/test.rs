@@ -6,7 +6,7 @@ use std::{
 };
 use uuid::Uuid;
 
-use assert_cmd::{assert::OutputAssertExt as _, cargo::CommandCargoExt};
+use assert_cmd::cargo::CommandCargoExt;
 use fixtures::fixtures;
 use serde::Deserialize;
 
