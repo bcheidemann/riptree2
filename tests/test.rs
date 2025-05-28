@@ -57,22 +57,43 @@ fn test(dir: &Path) {
     let reference_stdout = String::from_utf8(reference_output.stdout).unwrap();
     let reference_stderr = String::from_utf8(reference_output.stderr).unwrap();
 
-    let code_snapshot_path = dir.join("code.snap");
-    let stdout_snapshot_path = dir.join("stdout.snap");
-    let stderr_snapshot_path = dir.join("stderr.snap");
+    let code_reference_snapshot_path = dir.join("code.reference.snap");
+    let stdout_reference_snapshot_path = dir.join("stdout.reference.snap");
+    let stderr_reference_snapshot_path = dir.join("stderr.reference.snap");
 
-    std::fs::write(code_snapshot_path, format!("{reference_code}")).unwrap();
-    std::fs::write(stdout_snapshot_path, format!("{reference_stdout}")).unwrap();
-    std::fs::write(stderr_snapshot_path, format!("{reference_stderr}")).unwrap();
+    std::fs::write(code_reference_snapshot_path, format!("{reference_code}")).unwrap();
+    std::fs::write(
+        stdout_reference_snapshot_path,
+        format!("{reference_stdout}"),
+    )
+    .unwrap();
+    std::fs::write(
+        stderr_reference_snapshot_path,
+        format!("{reference_stderr}"),
+    )
+    .unwrap();
 
-    Command::cargo_bin(env!("CARGO_PKG_NAME"))
+    let sut_output = Command::cargo_bin(env!("CARGO_PKG_NAME"))
         .unwrap()
         .current_dir(&temp_working_dir)
         .args(&test_description.args)
-        .assert()
-        .code(reference_code)
-        .stdout(reference_stdout)
-        .stderr(reference_stderr);
+        .output()
+        .unwrap();
+    let sut_code = sut_output.status.code().unwrap();
+    let sut_stdout = String::from_utf8(sut_output.stdout).unwrap();
+    let sut_stderr = String::from_utf8(sut_output.stderr).unwrap();
+
+    let code_sut_snapshot_path = dir.join("code.sut.snap");
+    let stdout_sut_snapshot_path = dir.join("stdout.sut.snap");
+    let stderr_sut_snapshot_path = dir.join("stderr.sut.snap");
+
+    std::fs::write(code_sut_snapshot_path, format!("{sut_code}")).unwrap();
+    std::fs::write(stdout_sut_snapshot_path, format!("{sut_stdout}")).unwrap();
+    std::fs::write(stderr_sut_snapshot_path, format!("{sut_stderr}")).unwrap();
+
+    pretty_assertions::assert_eq!(reference_code, sut_code);
+    pretty_assertions::assert_eq!(reference_stdout, sut_stdout);
+    pretty_assertions::assert_eq!(reference_stderr, sut_stderr);
 }
 
 #[fixtures(["tests/fixtures/conformance/*.skip"])]

@@ -8,7 +8,7 @@ use std::{
 
 use anyhow::Context as _;
 
-use crate::{filter::TreeFilter, sorter::default_sorter};
+use crate::options::TreeOptions;
 
 #[derive(Default)]
 pub struct TreeStats {
@@ -29,8 +29,7 @@ impl TreeStats {
 }
 
 pub struct Tree {
-    filter: Arc<TreeFilter>,
-    sorter: fn(&DirEntry, &DirEntry) -> Ordering,
+    options: Arc<TreeOptions>,
     prefix: String,
     root: PathBuf,
 }
@@ -38,8 +37,7 @@ pub struct Tree {
 impl Default for Tree {
     fn default() -> Self {
         Self {
-            filter: Arc::new(TreeFilter::default()),
-            sorter: default_sorter,
+            options: Arc::new(TreeOptions::default()),
             prefix: "".to_string(),
             root: ".".into(),
         }
@@ -47,6 +45,14 @@ impl Default for Tree {
 }
 
 impl Tree {
+    pub fn new(options: TreeOptions, root: PathBuf) -> Self {
+        Self {
+            options: options.into(),
+            prefix: "".to_string(),
+            root,
+        }
+    }
+
     pub fn root(&self) -> &Path {
         &self.root
     }
@@ -54,8 +60,7 @@ impl Tree {
     fn enter_dir(&self, dir: &DirEntry, is_last: bool) -> Self {
         let new_prefix = if is_last { "    " } else { "│   " };
         Tree {
-            filter: self.filter.clone(),
-            sorter: self.sorter,
+            options: self.options.clone(),
             prefix: format!("{}{}", self.prefix, new_prefix),
             root: dir.path(),
         }
@@ -102,13 +107,13 @@ impl Tree {
             .filter(|entry| {
                 entry
                     .as_ref()
-                    .map(|entry| self.filter.include(&entry))
+                    .map(|entry| self.options.filter.include(&entry))
                     .unwrap_or(false)
             })
             .collect::<Vec<_>>();
 
         entries.sort_by(|a, b| match (a, b) {
-            (&Ok(ref a), &Ok(ref b)) => (self.sorter)(a, b),
+            (&Ok(ref a), &Ok(ref b)) => (self.options.sorter)(a, b),
             (&Err(_), &Err(_)) => Ordering::Equal,
             (&Ok(_), &Err(_)) => Ordering::Greater,
             (&Err(_), &Ok(_)) => Ordering::Less,
@@ -125,8 +130,18 @@ impl Tree {
         Ok(())
     }
 
+    pub fn write_root(&self, w: &mut impl Write) -> anyhow::Result<()> {
+        writeln!(w, "{}", self.root.to_string_lossy())?;
+        Ok(())
+    }
+
     pub fn print(&self, stats: &mut TreeStats) -> anyhow::Result<()> {
         let mut writer = std::io::stdout();
         self.write(&mut writer, stats)
+    }
+
+    pub fn print_root(&self) -> anyhow::Result<()> {
+        let mut writer = std::io::stdout();
+        self.write_root(&mut writer)
     }
 }

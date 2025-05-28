@@ -1,11 +1,27 @@
-use riptree::tree::{Tree, TreeStats};
+use clap::Parser as _;
+use riptree::{
+    args::TreeArgs,
+    options::TreeOptions,
+    tree::{Tree, TreeStats},
+};
 
 fn main() -> anyhow::Result<()> {
-    let mut stats = TreeStats::default();
-    let tree = Tree::default();
+    let args = TreeArgs::parse();
 
-    println!("{}", tree.root().to_string_lossy());
-    tree.print(&mut stats)?;
+    let mut stats = TreeStats::default();
+
+    let roots = if args.roots.is_empty() {
+        vec![".".to_string()]
+    } else {
+        args.roots.clone()
+    };
+
+    for root in roots {
+        let tree = Tree::new(TreeOptions::from(&args), root.clone().into());
+        println!("{root}");
+        tree.print(&mut stats)?;
+    }
+
     println!("");
 
     match (stats.dirs(), stats.files()) {

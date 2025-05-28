@@ -2,7 +2,7 @@ use std::fs::DirEntry;
 
 #[derive(Default)]
 pub struct TreeFilter {
-    show_hidden_files: bool,
+    pub show_hidden_files: bool,
 }
 
 impl TreeFilter {
