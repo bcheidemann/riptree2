@@ -13,6 +13,7 @@ homepage = "https://github.com/bcheidemann/riptree"
 repository = "https://github.com/bcheidemann/riptree"
 keywords = ["tree", "filesystem", "tool"]
 categories = ["command-line-utilities"]
+license-file = "LICENSE"
 
 [[bin]]
 path = "src/main.rs"
