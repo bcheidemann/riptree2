@@ -9,3 +9,20 @@ such as automatically respecting ignore files.
 
 riptree is under active development. The basic tree functionality has been
 implemented, but most options are not supported yet.
+
+# Backward Compatibility
+
+riptree aims to produce identical output to the Unix tree command by default.
+We achieve this through a suite of integration tests, which compare the output
+of a reference tree implementation to the output of riptree.
+
+There are some cases where the output of riptree will differ slightly from the
+output of the Unix tree command. For example, riptree automatically respects
+ignore files. For maximum backward compatibility, use the `--compat` flag, which
+disables all quality of life improvements.
+
+# Rust API
+
+The Rust API is available for use in other projects, but no guarantee is made
+regarding API stability. We may offer a stable public API in future as this
+project matures.
