@@ -1,4 +1,4 @@
 {
-  "comment": "Files should be ordered consistently with the reference implementation",
+  "description": "Files should be ordered consistently with the reference implementation",
   "args": ["-a"]
 }

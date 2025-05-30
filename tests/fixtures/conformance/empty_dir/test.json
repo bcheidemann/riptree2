@@ -1,3 +1,4 @@
 {
+  "description": "Empty roots should be handled correctly",
   "args": []
 }

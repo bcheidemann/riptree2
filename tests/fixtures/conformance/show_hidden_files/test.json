@@ -1,5 +1,4 @@
 {
-  "comment": "-a flag should show hidden files and folders",
-  "args": ["-a"],
-  "create_dirs": [".b"]
+  "description": "-a flag should show hidden files and folders",
+  "args": ["-a"]
 }

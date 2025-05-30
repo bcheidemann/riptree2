@@ -1,4 +1,4 @@
 {
-  "args": [],
-  "create_dirs": [".b"]
+  "description": "Hidden files and folders should be handled correctly",
+  "args": []
 }

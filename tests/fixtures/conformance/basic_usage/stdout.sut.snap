@@ -1,0 +1,13 @@
+.
+├── a.txt
+├── b.txt
+├── c
+│   └── a.txt
+├── d
+│   ├── a.txt
+│   ├── b.txt
+│   └── c
+└── e
+    └── a.txt
+
+5 directories, 6 files

@@ -1,4 +1,4 @@
 {
-  "args": ["a", "b"],
-  "create_dirs": []
+  "description": "Multiple roots should be handled correctly",
+  "args": ["a", "b"]
 }
