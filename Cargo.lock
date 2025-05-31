@@ -573,6 +573,7 @@ version = "0.1.0"
 dependencies = [
  "assert_cmd",
  "copy_dir",
+ "pretty_assertions",
  "uuid",
 ]
 

@@ -1,3 +1,5 @@
+pub mod snapshot;
+
 use std::{
     path::{Path, PathBuf},
     process::Command,

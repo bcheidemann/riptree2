@@ -65,9 +65,9 @@ fn test(test_dir: &Path) {
     let stdout_sut_snapshot_path = test_dir.join("stdout.sut.snap");
     let stderr_sut_snapshot_path = test_dir.join("stderr.sut.snap");
 
-    std::fs::write(code_sut_snapshot_path, format!("{sut_code}")).unwrap();
-    std::fs::write(stdout_sut_snapshot_path, format!("{sut_stdout}")).unwrap();
-    std::fs::write(stderr_sut_snapshot_path, format!("{sut_stderr}")).unwrap();
+    std::fs::write(code_sut_snapshot_path, sut_code.to_string()).unwrap();
+    std::fs::write(stdout_sut_snapshot_path, &sut_stdout).unwrap();
+    std::fs::write(stderr_sut_snapshot_path, &sut_stderr).unwrap();
 
     pretty_assertions::assert_eq!(reference_code, sut_code);
     pretty_assertions::assert_eq!(reference_stdout, sut_stdout);
