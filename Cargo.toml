@@ -4,13 +4,13 @@ version = "0.2.1"
 edition = "2024"
 authors = ["Ben Heidemann <ben@heidemann.dev>"]
 description = """
-riptree is a Rust rewrite of the Unix tree command. It aims to be a drop in
+riptree2 is a Rust rewrite of the Unix tree command. It aims to be a drop in
 replacement (`alias tree="rt --compat"`) with some quality of life improvements,
 such as automatically respecting ignore files.
 """
-documentation = "https://github.com/bcheidemann/riptree"
-homepage = "https://github.com/bcheidemann/riptree"
-repository = "https://github.com/bcheidemann/riptree"
+documentation = "https://github.com/bcheidemann/riptree2"
+homepage = "https://github.com/bcheidemann/riptree2"
+repository = "https://github.com/bcheidemann/riptree2"
 keywords = ["tree", "filesystem", "tool"]
 categories = ["command-line-utilities"]
 license-file = "LICENSE"
