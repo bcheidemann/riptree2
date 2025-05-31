@@ -86,6 +86,10 @@ impl<'ignore> IgnoreDir<'ignore> {
     }
 
     pub(crate) fn include(&self, path: &PathBuf, is_dir: bool) -> bool {
+        if is_dir && path.file_name().map(|name| name == ".git").unwrap_or(false) {
+            return false;
+        }
+
         for gitignore in &self.gitignores {
             let is_match = gitignore.matched(path, is_dir);
 

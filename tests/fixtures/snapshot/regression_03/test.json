@@ -1,0 +1,4 @@
+{
+  "description": "Should ignore .git files even when -a option is provided",
+  "args": ["-a"]
+}
