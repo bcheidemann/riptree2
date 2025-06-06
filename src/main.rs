@@ -23,13 +23,7 @@ fn main() -> anyhow::Result<()> {
     }
 
     println!();
-
-    match (stats.dirs(), stats.files()) {
-        (1, 1) => println!("1 directory, 1 file"),
-        (dirs, 1) => println!("{dirs} directories, 1 file"),
-        (1, files) => println!("1 directory, {files} files"),
-        (dirs, files) => println!("{dirs} directories, {files} files"),
-    };
+    stats.print()?;
 
     Ok(())
 }

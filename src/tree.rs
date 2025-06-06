@@ -25,6 +25,21 @@ impl TreeStats {
     pub fn files(&self) -> usize {
         self.files
     }
+
+    pub fn write(&self, w: &mut impl Write) -> anyhow::Result<()> {
+        match (self.dirs(), self.files()) {
+            (1, 1) => writeln!(w, "1 directory, 1 file"),
+            (dirs, 1) => writeln!(w, "{dirs} directories, 1 file"),
+            (1, files) => writeln!(w, "1 directory, {files} files"),
+            (dirs, files) => writeln!(w, "{dirs} directories, {files} files"),
+        }?;
+        Ok(())
+    }
+
+    pub fn print(&self) -> anyhow::Result<()> {
+        let mut writer = std::io::stdout();
+        self.write(&mut writer)
+    }
 }
 
 pub struct Tree<'tree> {
