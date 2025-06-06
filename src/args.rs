@@ -6,6 +6,9 @@ pub struct TreeArgs {
     #[arg(short = 'a')]
     /// All files are listed.
     pub show_hidden_files: bool,
+    #[arg(short = 'd')]
+    /// List directories only.
+    pub list_directories_only: bool,
 
     // ============================= File options ==============================
     // TODO

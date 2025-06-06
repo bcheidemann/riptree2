@@ -1,6 +1,5 @@
 use std::{
     cmp::Ordering,
-    fs::DirEntry,
     io::Write,
     path::{Path, PathBuf},
     sync::Arc,
@@ -8,7 +7,7 @@ use std::{
 
 use anyhow::Context as _;
 
-use crate::{filter::TreeFilter, options::TreeOptions};
+use crate::{entry::Entry, filter::TreeFilter, options::TreeOptions};
 
 #[derive(Default)]
 pub struct TreeStats {
@@ -51,17 +50,17 @@ impl<'tree> Tree<'tree> {
         &self.root
     }
 
-    fn enter_dir(&'tree self, dir: &DirEntry, is_last: bool) -> anyhow::Result<Self> {
+    fn enter_dir(&'tree self, dir: Entry, is_last: bool) -> anyhow::Result<Self> {
         let new_prefix = if is_last { "    " } else { "│   " };
         Ok(Tree {
             filter: self
                 .filter
-                .enter_dir(dir, &self.options)
+                .enter_dir(&dir, &self.options)
                 .with_context(|| format!("Failed to enter {}", dir.path().to_string_lossy()))?,
             options: self.options.clone(),
             depth: self.depth + 1,
             prefix: format!("{}{}", self.prefix, new_prefix),
-            root: dir.path(),
+            root: dir.into_path(),
         })
     }
 
@@ -69,7 +68,7 @@ impl<'tree> Tree<'tree> {
     fn write_entry(
         &self,
         w: &mut impl Write,
-        entry: &DirEntry,
+        entry: Entry,
         is_last: bool,
         stats: &mut TreeStats,
     ) -> anyhow::Result<()> {
@@ -90,16 +89,7 @@ impl<'tree> Tree<'tree> {
         };
         result.context("Failed to write entry")?;
 
-        if entry
-            .file_type()
-            .with_context(|| {
-                format!(
-                    "Failed to get file type of {}",
-                    entry.path().to_string_lossy()
-                )
-            })?
-            .is_dir()
-        {
+        if entry.file_type().is_dir() {
             self.enter_dir(entry, is_last)?.write(w, stats)?;
         } else {
             stats.files += 1;
@@ -111,11 +101,12 @@ impl<'tree> Tree<'tree> {
     pub fn write(&self, w: &mut impl Write, stats: &mut TreeStats) -> anyhow::Result<()> {
         let mut entries = std::fs::read_dir(&self.root)
             .context("Failed to read directory")?
+            .map(|entry| -> anyhow::Result<Entry> { Entry::new(entry?) })
             .filter(|entry| {
                 entry
                     .as_ref()
                     .map(|entry| self.filter.include(entry, &self.options))
-                    .unwrap_or(false)
+                    .unwrap_or(true)
             })
             .collect::<Vec<_>>();
 
@@ -132,15 +123,11 @@ impl<'tree> Tree<'tree> {
             (Err(_), Ok(_)) => Ordering::Less,
         });
 
-        if let Some((last_entry, leading_entries)) = entries.split_last() {
-            for entry in leading_entries.iter() {
-                let entry = match entry.as_ref() {
-                    Ok(entry) => entry,
-                    Err(err) => return Err(anyhow::anyhow!("{err}")),
-                };
-                self.write_entry(w, entry, false, stats)?;
+        if let (Some(last_entry), leading_entries) = (entries.pop(), entries) {
+            for entry in leading_entries.into_iter() {
+                self.write_entry(w, entry?, false, stats)?;
             }
-            self.write_entry(w, last_entry.as_ref().unwrap(), true, stats)?;
+            self.write_entry(w, last_entry?, true, stats)?;
         }
 
         Ok(())

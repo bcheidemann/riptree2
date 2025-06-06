@@ -61,7 +61,7 @@ impl<'ignore> IgnoreDir<'ignore> {
         })
     }
 
-    pub(crate) fn enter_dir(&'ignore self, dir: &PathBuf) -> anyhow::Result<Self> {
+    pub(crate) fn enter_dir(&'ignore self, dir: &Path) -> anyhow::Result<Self> {
         let gitignore_path = dir.join(".gitignore");
         let gitignores =
             if gitignore_path.exists() {
@@ -85,7 +85,7 @@ impl<'ignore> IgnoreDir<'ignore> {
         })
     }
 
-    pub(crate) fn include(&self, path: &PathBuf, is_dir: bool) -> bool {
+    pub(crate) fn include(&self, path: &Path, is_dir: bool) -> bool {
         if is_dir && path.file_name().map(|name| name == ".git").unwrap_or(false) {
             return false;
         }

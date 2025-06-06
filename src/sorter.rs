@@ -1,7 +1,9 @@
-use std::{cmp::Ordering, fs::DirEntry};
+use std::cmp::Ordering;
 
-pub fn default_sorter(a: &DirEntry, b: &DirEntry) -> Ordering {
-    a.file_name().cmp(&b.file_name())
+use crate::entry::Entry;
+
+pub fn default_sorter(a: &Entry, b: &Entry) -> Ordering {
+    a.file_name().cmp(b.file_name())
 
     // Folders last
     // match (
