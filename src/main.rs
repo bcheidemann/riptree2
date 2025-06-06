@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use clap::Parser as _;
 use riptree2::{
     args::TreeArgs,
@@ -7,8 +9,9 @@ use riptree2::{
 
 fn main() -> anyhow::Result<()> {
     let args = TreeArgs::parse();
+    let opts = Arc::new(TreeOptions::from(&args));
 
-    let mut stats = TreeStats::default();
+    let mut stats = TreeStats::new(opts.clone());
 
     let roots = if args.roots.is_empty() {
         vec![".".to_string()]
@@ -17,7 +20,7 @@ fn main() -> anyhow::Result<()> {
     };
 
     for root in &roots {
-        let tree = Tree::new(root.clone().into(), TreeOptions::from(&args))?;
+        let tree = Tree::new(root.clone().into(), opts.clone())?;
         println!("{root}");
         tree.print(&mut stats)?;
     }

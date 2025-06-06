@@ -9,13 +9,21 @@ use anyhow::Context as _;
 
 use crate::{entry::Entry, filter::TreeFilter, options::TreeOptions};
 
-#[derive(Default)]
 pub struct TreeStats {
+    options: Arc<TreeOptions>,
     dirs: usize,
     files: usize,
 }
 
 impl TreeStats {
+    pub fn new(options: Arc<TreeOptions>) -> Self {
+        Self {
+            options,
+            dirs: 0,
+            files: 0,
+        }
+    }
+
     #[inline(always)]
     pub fn dirs(&self) -> usize {
         self.dirs
@@ -27,12 +35,22 @@ impl TreeStats {
     }
 
     pub fn write(&self, w: &mut impl Write) -> anyhow::Result<()> {
+        if self.options.list_directories_only {
+            match self.dirs() {
+                1 => writeln!(w, "1 directory, 1 file"),
+                dirs => writeln!(w, "{dirs} directories"),
+            }?;
+
+            return Ok(());
+        }
+
         match (self.dirs(), self.files()) {
             (1, 1) => writeln!(w, "1 directory, 1 file"),
             (dirs, 1) => writeln!(w, "{dirs} directories, 1 file"),
             (1, files) => writeln!(w, "1 directory, {files} files"),
             (dirs, files) => writeln!(w, "{dirs} directories, {files} files"),
         }?;
+
         Ok(())
     }
 
@@ -51,10 +69,10 @@ pub struct Tree<'tree> {
 }
 
 impl<'tree> Tree<'tree> {
-    pub fn new(root: PathBuf, options: TreeOptions) -> anyhow::Result<Self> {
+    pub fn new(root: PathBuf, options: Arc<TreeOptions>) -> anyhow::Result<Self> {
         Ok(Self {
             filter: TreeFilter::new(&root, &options)?,
-            options: options.into(),
+            options,
             depth: 0,
             prefix: "".to_string(),
             root,
