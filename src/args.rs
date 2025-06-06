@@ -1,6 +1,7 @@
 use clap::Parser;
 
 #[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
 pub struct TreeArgs {
     // ============================ Listing options ============================
     #[arg(short = 'a')]
