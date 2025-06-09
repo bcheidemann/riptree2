@@ -1,6 +1,7 @@
 .
 ├── .a
-├── .b.txt
-└── c.txt
+├── .c.txt
+├── b
+└── d.txt
 
-2 directories, 2 files
+3 directories, 2 files

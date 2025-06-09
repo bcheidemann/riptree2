@@ -3,7 +3,7 @@ use std::{fs::File, io::BufReader, path::Path, process::Command};
 use assert_cmd::cargo::CommandCargoExt;
 use fixtures::fixtures;
 use serde::Deserialize;
-use test_utils::{TestWorkingDir, update_dir_template_archive};
+use test_utils::TestWorkingDir;
 
 #[derive(Deserialize)]
 struct TestDescription {
@@ -22,7 +22,6 @@ fn test(test_dir: &Path) {
 
     eprintln!("[TEST DESCRIPTION]\n{}\n\n", test_description.description);
 
-    update_dir_template_archive(test_dir);
     let test_working_dir = TestWorkingDir::new(test_dir);
 
     let reference_binary = std::env::var_os("TREE_REFERENCE_BIN").unwrap_or("tree".into());
