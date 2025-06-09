@@ -1,0 +1,5 @@
+{
+  "description": "Correctly handles symbolic links",
+  "args": ["root"],
+  "current_directory": "current_directory"
+}

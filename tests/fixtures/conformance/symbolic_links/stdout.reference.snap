@@ -1,0 +1,10 @@
+root
+├── a.txt.link -> ../a.txt
+├── b.link -> ../b
+├── c.txt
+├── c.txt.link -> ./root/c.txt
+├── d
+│   └── a.txt
+└── d.link -> ./root/d
+
+2 directories, 6 files

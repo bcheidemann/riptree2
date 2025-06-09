@@ -9,6 +9,7 @@ use test_utils::TestWorkingDir;
 struct TestDescription {
     description: String,
     args: Vec<String>,
+    current_directory: Option<String>,
 }
 
 #[fixtures(["tests/fixtures/conformance/*", "!*.skip"])]
@@ -23,10 +24,14 @@ fn test(test_dir: &Path) {
     eprintln!("[TEST DESCRIPTION]\n{}\n\n", test_description.description);
 
     let test_working_dir = TestWorkingDir::new(test_dir);
+    let command_current_directory = match test_description.current_directory {
+        Some(current_directory) => test_working_dir.as_ref().join(current_directory),
+        None => test_working_dir.as_ref().to_path_buf(),
+    };
 
     let reference_binary = std::env::var_os("TREE_REFERENCE_BIN").unwrap_or("tree".into());
     let reference_output = Command::new(reference_binary)
-        .current_dir(&test_working_dir)
+        .current_dir(&command_current_directory)
         .args(&test_description.args)
         .output()
         .unwrap();
@@ -52,7 +57,7 @@ fn test(test_dir: &Path) {
 
     let sut_output = Command::cargo_bin("rt")
         .unwrap()
-        .current_dir(&test_working_dir)
+        .current_dir(&command_current_directory)
         .args(&test_description.args)
         .output()
         .unwrap();

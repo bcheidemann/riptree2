@@ -1,5 +1,6 @@
 use std::{
     cmp::Ordering,
+    fs::read_link,
     io::Write,
     path::{Path, PathBuf},
     sync::Arc,
@@ -105,20 +106,17 @@ impl<'tree> Tree<'tree> {
         is_last: bool,
         stats: &mut TreeStats,
     ) -> anyhow::Result<()> {
-        let result = if is_last {
-            writeln!(
-                w,
-                "{}└── {}",
-                self.prefix,
-                entry.file_name().to_string_lossy(),
-            )
+        let file_name = entry.file_name().to_string_lossy();
+        let link_target = if entry.file_type().is_symlink() {
+            let target = read_link(entry.path()).context("Failed to read link")?;
+            format!(" -> {}", target.to_string_lossy())
         } else {
-            writeln!(
-                w,
-                "{}├── {}",
-                self.prefix,
-                entry.file_name().to_string_lossy(),
-            )
+            "".to_string()
+        };
+        let result = if is_last {
+            writeln!(w, "{}└── {file_name}{link_target}", self.prefix)
+        } else {
+            writeln!(w, "{}├── {file_name}{link_target}", self.prefix)
         };
         result.context("Failed to write entry")?;
 
