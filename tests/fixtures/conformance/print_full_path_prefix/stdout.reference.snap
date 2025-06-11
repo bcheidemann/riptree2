@@ -1,0 +1,10 @@
+.
+├── ./a.txt
+├── ./b
+│   └── ./b/a.txt
+└── ./c
+    ├── ./c/a.txt
+    └── ./c/b
+        └── ./c/b/a.txt
+
+4 directories, 4 files

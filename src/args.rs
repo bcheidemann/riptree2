@@ -10,6 +10,10 @@ pub struct TreeArgs {
     #[arg(short = 'd')]
     /// List directories only.
     pub list_directories_only: bool,
+    // TODO: -l
+    #[arg(short = 'f')]
+    /// Print the full path prefix for each file.
+    pub print_full_path_prefix: bool,
 
     // ============================= File options ==============================
     // TODO

@@ -1,0 +1,4 @@
+{
+  "description": "Print the full path prefix for each file",
+  "args": ["-f"]
+}

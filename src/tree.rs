@@ -66,16 +66,24 @@ pub struct Tree<'tree> {
     options: Arc<TreeOptions>,
     depth: usize,
     prefix: String,
+    path_prefix: Option<PathBuf>,
     root: PathBuf,
 }
 
 impl<'tree> Tree<'tree> {
     pub fn new(root: PathBuf, options: Arc<TreeOptions>) -> anyhow::Result<Self> {
+        let path_prefix = if options.print_full_path_prefix {
+            Some(root.clone())
+        } else {
+            None
+        };
+
         Ok(Self {
             filter: TreeFilter::new(&root, &options)?,
             options,
             depth: 0,
             prefix: "".to_string(),
+            path_prefix,
             root,
         })
     }
@@ -94,6 +102,10 @@ impl<'tree> Tree<'tree> {
             options: self.options.clone(),
             depth: self.depth + 1,
             prefix: format!("{}{}", self.prefix, new_prefix),
+            path_prefix: self
+                .path_prefix
+                .as_ref()
+                .map(|path_prefix| path_prefix.join(dir.file_name())),
             root: dir.into_path(),
         })
     }
@@ -106,7 +118,13 @@ impl<'tree> Tree<'tree> {
         is_last: bool,
         stats: &mut TreeStats,
     ) -> anyhow::Result<()> {
-        let file_name = entry.file_name().to_string_lossy();
+        let file_name = match self.path_prefix.as_ref() {
+            Some(path_prefix) => path_prefix
+                .join(entry.file_name())
+                .to_string_lossy()
+                .to_string(),
+            None => entry.file_name().to_string_lossy().to_string(),
+        };
         let link_target = if entry.file_type().is_symlink() {
             let target = read_link(entry.path()).context("Failed to read link")?;
             format!(" -> {}", target.to_string_lossy())
