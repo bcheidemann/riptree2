@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 echo "/e
 /a.txt
 *.ignore

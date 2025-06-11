@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 mkdir a
 touch a/a.txt
 mkdir b
