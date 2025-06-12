@@ -1,0 +1,15 @@
+{
+  "description": "Test include/exclude pattern priority",
+  "args": [
+    "-I",
+    "a.txt",
+    "-P",
+    "a.txt",
+    "-P",
+    "b.pdf",
+    "-I",
+    "b.pdf",
+    "-P",
+    "c.png"
+  ]
+}
