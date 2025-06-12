@@ -1,0 +1,4 @@
+{
+  "description": "List only files with the .pdf or .docx extension",
+  "args": ["-P", "*.pdf", "-P", "*.docx"]
+}
