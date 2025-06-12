@@ -39,7 +39,7 @@ impl TryFrom<TreeArgs> for TreeOptions {
             print_full_path_prefix: args.print_full_path_prefix,
             max_level: args.max_level,
             file_include_globset: build_globset(args.file_include_patterns)
-                .context("Failed to build matcher for file include patters")?,
+                .context("Failed to build matcher for file include patterns (-P)")?,
             respect_gitignore: if args.compat {
                 args.gitignore
             } else {
@@ -52,20 +52,28 @@ impl TryFrom<TreeArgs> for TreeOptions {
 
 /// Builds a GlobSet matcher from a collection of globs. Returns `Ok(None)` if
 /// the collection of globs is empty.
-fn build_globset(globs: Vec<Glob>) -> anyhow::Result<Option<Arc<GlobSet>>> {
+fn build_globset(globs: Vec<String>) -> anyhow::Result<Option<Arc<GlobSet>>> {
     if globs.is_empty() {
         return Ok(None);
     }
 
-    // TODO: Ideally `GlobSet::new` would be public, since internally this
-    //       is just constructing a Vec<Glob> and passing it to
-    //       `GlobSet::new`. We already have a `Vec<Glob>` so we don't need
-    //       the builder.
-    // LINK: https://github.com/BurntSushi/ripgrep/pull/3066
+    // Split globs on | to match behaviour of reference implementation
+    let globs = globs.into_iter().flat_map(|s| {
+        s.split("|")
+            .map(|s| s.to_string())
+            .collect::<Box<[String]>>()
+    });
+
     let mut file_include_globset_builder = GlobSet::builder();
 
-    for pat in globs.into_iter() {
-        file_include_globset_builder.add(pat);
+    for glob in globs {
+        // TODO: In compat mode we should port the glob parser from the
+        //       reference implementation.
+        // EXPLANATION: The glob parser used differes from the reference in a
+        //              number of ways, including accepting the {} syntax, and
+        //              how it handles invalid globs e.g. '*.[txt'
+        let glob = Glob::new(&glob)?;
+        file_include_globset_builder.add(glob);
     }
 
     Ok(Some(file_include_globset_builder.build()?.into()))

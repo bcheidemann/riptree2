@@ -1,5 +1,4 @@
 use clap::Parser;
-use globset::Glob;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -22,7 +21,7 @@ pub struct TreeArgs {
     // TODO: -R
     #[arg(short = 'P')]
     /// List only those files that match the pattern given.
-    pub file_include_patterns: Vec<Glob>,
+    pub file_include_patterns: Vec<String>,
 
     // ============================= File options ==============================
     // TODO
