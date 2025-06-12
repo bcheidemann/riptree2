@@ -14,6 +14,10 @@ pub struct TreeArgs {
     #[arg(short = 'f')]
     /// Print the full path prefix for each file.
     pub print_full_path_prefix: bool,
+    // TODO: -x
+    #[arg(short = 'L')]
+    /// Descend only level directories deep.
+    pub max_level: Option<usize>,
 
     // ============================= File options ==============================
     // TODO

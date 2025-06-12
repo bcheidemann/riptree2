@@ -139,7 +139,16 @@ impl<'tree> Tree<'tree> {
         result.context("Failed to write entry")?;
 
         if entry.file_type().is_dir() {
-            self.enter_dir(entry, is_last)?.write(w, stats)?;
+            let should_enter_dir = if let Some(max_level) = self.options.max_level {
+                max_level - 1 > self.depth
+            } else {
+                true
+            };
+            if should_enter_dir {
+                self.enter_dir(entry, is_last)?.write(w, stats)?;
+            } else {
+                stats.dirs += 1;
+            }
         } else {
             stats.files += 1;
         }

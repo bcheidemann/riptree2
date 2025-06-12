@@ -1,0 +1,4 @@
+{
+  "description": "List directories only",
+  "args": ["-L", "3"]
+}
