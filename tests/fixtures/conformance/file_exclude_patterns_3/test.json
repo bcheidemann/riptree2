@@ -1,0 +1,15 @@
+{
+  "description": "Handle complex file exclude patterns",
+  "args": [
+    "-I",
+    "*.pdf",
+    "-I",
+    "*.doc|*.docx",
+    "-I",
+    "*.[jt]s",
+    "-I",
+    "*.?sx",
+    "-I",
+    "i.[^n]"
+  ]
+}

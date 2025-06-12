@@ -22,6 +22,9 @@ pub struct TreeArgs {
     #[arg(short = 'P')]
     /// List only those files that match the pattern given.
     pub file_include_patterns: Vec<String>,
+    #[arg(short = 'I')]
+    /// Do not list files that match the given pattern.
+    pub file_exclude_patterns: Vec<String>,
 
     // ============================= File options ==============================
     // TODO

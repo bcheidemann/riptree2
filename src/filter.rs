@@ -46,6 +46,12 @@ impl<'filter> TreeFilter<'filter> {
                     return false;
                 }
             }
+
+            if let Some(file_exclude_globset) = options.file_exclude_globset.as_ref() {
+                if file_exclude_globset.is_match(entry.file_name()) {
+                    return false;
+                }
+            }
         }
 
         if !self

@@ -1,0 +1,4 @@
+{
+  "description": "Exclude files with the .pdf extension",
+  "args": ["-I", "*.pdf"]
+}
