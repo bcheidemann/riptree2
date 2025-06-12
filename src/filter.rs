@@ -36,8 +36,16 @@ impl<'filter> TreeFilter<'filter> {
             return false;
         }
 
-        if options.list_directories_only && entry.file_type().is_file() {
-            return false;
+        if entry.file_type().is_file() {
+            if options.list_directories_only {
+                return false;
+            }
+
+            if let Some(file_include_globset) = options.file_include_globset.as_ref() {
+                if !file_include_globset.is_match(entry.file_name()) {
+                    return false;
+                }
+            }
         }
 
         if !self

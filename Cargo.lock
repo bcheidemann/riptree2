@@ -464,6 +464,7 @@ dependencies = [
  "assert_cmd",
  "clap",
  "fixtures",
+ "globset",
  "ignore",
  "pretty_assertions",
  "serde",

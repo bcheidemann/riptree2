@@ -1,4 +1,4 @@
 {
-  "description": "List directories only",
+  "description": "Descend only 3 levels deep",
   "args": ["-L", "3"]
 }
