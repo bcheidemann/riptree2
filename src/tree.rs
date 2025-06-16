@@ -8,7 +8,7 @@ use std::{
 
 use anyhow::Context as _;
 
-use crate::{entry::Entry, filter::TreeFilter, options::TreeOptions};
+use crate::{entry::Entry, filter::TreeFilter, icons::*, options::TreeOptions};
 
 pub struct TreeStats {
     options: Arc<TreeOptions>,
@@ -131,10 +131,11 @@ impl<'tree> Tree<'tree> {
         } else {
             "".to_string()
         };
+        let icon = self.icon(&entry);
         let result = if is_last {
-            writeln!(w, "{}└── {file_name}{link_target}", self.prefix)
+            writeln!(w, "{}└── {icon}{file_name}{link_target}", self.prefix)
         } else {
-            writeln!(w, "{}├── {file_name}{link_target}", self.prefix)
+            writeln!(w, "{}├── {icon}{file_name}{link_target}", self.prefix)
         };
         result.context("Failed to write entry")?;
 
@@ -203,5 +204,17 @@ impl<'tree> Tree<'tree> {
     pub fn print_root(&self) -> anyhow::Result<()> {
         let mut writer = std::io::stdout();
         self.write_root(&mut writer)
+    }
+
+    #[inline]
+    fn icon(&self, entry: &Entry) -> &'static str {
+        if !self.options.icons {
+            return ICON_NONE;
+        }
+        if entry.file_type().is_dir() {
+            ICON_DIR
+        } else {
+            ICON_NONE
+        }
     }
 }
