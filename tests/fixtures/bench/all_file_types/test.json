@@ -1,0 +1,4 @@
+{
+  "description": "Test performance on directory with all file types",
+  "args": ["-a"]
+}
