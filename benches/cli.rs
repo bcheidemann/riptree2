@@ -16,8 +16,9 @@ struct TestDescription {
     args: Vec<String>,
 }
 
-fn criterion_benchmark(c: &mut Criterion) {
-    let test_dir = Path::new("tests/fixtures/bench/all_file_types");
+fn run_cli_benchmark(c: &mut Criterion, test_name: &str) {
+    let test_dir = format!("tests/fixtures/bench/{test_name}");
+    let test_dir = Path::new(&test_dir);
 
     Command::new("cargo")
         .arg("build")
@@ -55,7 +56,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     assert_snapshot(stdout_snapshot_path, sut_stdout);
     assert_snapshot(stderr_snapshot_path, sut_stderr);
 
-    c.bench_function("cli_all_file_types", |b| {
+    c.bench_function(&test_name, |b| {
         b.iter(|| {
             Command::new(&release_bin)
                 .current_dir(&test_working_dir)
@@ -65,6 +66,11 @@ fn criterion_benchmark(c: &mut Criterion) {
                 .unwrap();
         })
     });
+}
+
+fn criterion_benchmark(c: &mut Criterion) {
+    run_cli_benchmark(c, "cli_all_file_types");
+    run_cli_benchmark(c, "cli_nested_dirs");
 }
 
 criterion_group!(benches, criterion_benchmark);

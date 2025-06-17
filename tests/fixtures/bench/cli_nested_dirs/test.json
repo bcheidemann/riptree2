@@ -1,0 +1,4 @@
+{
+  "description": "Test performance on deeply nested directories",
+  "args": ["-a"]
+}
