@@ -55,6 +55,16 @@ pub struct TreeArgs {
     ///
     /// Requires the --compat option.
     pub gitignore: bool,
+    #[arg(long, requires = "compat")]
+    /// Show Nerd Fonts icons.
+    ///
+    /// Requires the --compat option.
+    pub icons: bool,
+    #[arg(long, conflicts_with = "compat")]
+    /// Hide Nerd Fonts icons.
+    ///
+    /// Incompatible with the --compat option.
+    pub no_icons: bool,
 
     // ================================= Roots =================================
     #[arg()]

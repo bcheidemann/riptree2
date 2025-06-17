@@ -13,6 +13,7 @@ pub struct TreeOptions {
     pub file_include_globset: Option<Arc<GlobSet>>,
     pub file_exclude_globset: Option<Arc<GlobSet>>,
     pub respect_gitignore: bool,
+    pub icons: bool,
     pub sorter: fn(&Entry, &Entry) -> Ordering,
 }
 
@@ -26,6 +27,7 @@ impl Default for TreeOptions {
             file_include_globset: None,
             file_exclude_globset: None,
             respect_gitignore: true,
+            icons: true,
             sorter: default_sorter,
         }
     }
@@ -48,6 +50,11 @@ impl TryFrom<TreeArgs> for TreeOptions {
                 args.gitignore
             } else {
                 !args.no_gitignore
+            },
+            icons: if args.compat {
+                args.icons
+            } else {
+                !args.no_icons
             },
             sorter: default_sorter,
         })

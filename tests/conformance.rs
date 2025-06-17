@@ -58,6 +58,7 @@ fn test(test_dir: &Path) {
     let sut_output = Command::cargo_bin("rt")
         .unwrap()
         .current_dir(&command_current_directory)
+        .arg("--compat")
         .args(&test_description.args)
         .output()
         .unwrap();

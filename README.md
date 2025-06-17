@@ -3,7 +3,7 @@ riptree2 (rt)
 
 riptree2 is a Rust rewrite of the Unix tree command. It aims to be a drop in
 replacement (`alias tree="rt --compat"`) with some quality of life improvements,
-such as automatically respecting ignore files.
+such as respecting ignore files by default.
 
 # Current Status
 
@@ -20,6 +20,14 @@ There are some cases where the output of riptree2 will differ slightly from the
 output of the Unix tree command. For example, riptree2 automatically respects
 ignore files. For maximum backward compatibility, use the `--compat` flag, which
 disables all quality of life improvements.
+
+# Features
+
+## Nerd Font icons
+
+By default, riptree2 shows Nerd Font icons for each file type. If you don't
+have a Nerd Font installed, or prefer not to show icons, you can disable this
+feature with the `--no-icons` option.
 
 # Rust API
 
