@@ -1,11 +1,11 @@
 .
-├── .gitignore
-├── b.txt
-├── d
-│   ├── .gitignore
-│   ├── a.txt
-│   └── b.not.ignore
-└── f
-    └── a.txt
+├──  .gitignore
+├── 󰈙 b.txt
+├──  d
+│   ├──  .gitignore
+│   ├── 󰈙 a.txt
+│   └── 󰦨 b.not.ignore
+└──  f
+    └── 󰈙 a.txt
 
 3 directories, 6 files

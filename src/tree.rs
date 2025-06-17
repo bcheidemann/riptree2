@@ -214,7 +214,27 @@ impl<'tree> Tree<'tree> {
         if entry.file_type().is_dir() {
             ICON_DIR
         } else {
-            ICON_NONE
+            if let Some(file_name) = entry.file_name().to_str() {
+                if let Some((icon, _)) = ICONS_BY_FILENAME.get(file_name) {
+                    return icon;
+                }
+                let mut parts = file_name.split('.').rev();
+                let short_extension = unsafe {
+                    // SAFETY: Iterator will always contain at least one element
+                    parts.next().unwrap_unchecked()
+                };
+                if let Some(part) = parts.next() {
+                    if let Some((icon, _)) =
+                        ICONS_BY_EXTENSION.get(&format!("{part}.{short_extension}"))
+                    {
+                        return icon;
+                    }
+                }
+                if let Some((icon, _)) = ICONS_BY_EXTENSION.get(short_extension) {
+                    return icon;
+                }
+            }
+            ICON_TEXT
         }
     }
 }

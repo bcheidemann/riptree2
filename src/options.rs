@@ -52,7 +52,6 @@ impl TryFrom<TreeArgs> for TreeOptions {
                 !args.no_gitignore
             },
             icons: if args.compat {
-                dbg!(args.icons);
                 args.icons
             } else {
                 !args.no_icons
