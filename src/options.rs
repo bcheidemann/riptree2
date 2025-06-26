@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, sync::Arc};
+use std::cmp::Ordering;
 
 use anyhow::Context as _;
 use globset::{GlobBuilder, GlobSet};
@@ -10,8 +10,8 @@ pub struct TreeOptions {
     pub list_directories_only: bool,
     pub print_full_path_prefix: bool,
     pub max_level: Option<usize>,
-    pub file_include_globset: Option<Arc<GlobSet>>,
-    pub file_exclude_globset: Option<Arc<GlobSet>>,
+    pub file_include_globset: Option<GlobSet>,
+    pub file_exclude_globset: Option<GlobSet>,
     pub respect_gitignore: bool,
     pub icons: bool,
     pub sorter: fn(&Entry, &Entry) -> Ordering,
@@ -63,10 +63,7 @@ impl TryFrom<TreeArgs> for TreeOptions {
 
 /// Builds a GlobSet matcher from a collection of globs. Returns `Ok(None)` if
 /// the collection of globs is empty.
-fn build_globset(
-    globs: Vec<String>,
-    case_insensitive: bool,
-) -> anyhow::Result<Option<Arc<GlobSet>>> {
+fn build_globset(globs: Vec<String>, case_insensitive: bool) -> anyhow::Result<Option<GlobSet>> {
     if globs.is_empty() {
         return Ok(None);
     }
@@ -93,5 +90,5 @@ fn build_globset(
         file_include_globset_builder.add(glob);
     }
 
-    Ok(Some(file_include_globset_builder.build()?.into()))
+    Ok(Some(file_include_globset_builder.build()?))
 }
