@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, sync::Arc};
 
 use anyhow::Context as _;
-use globset::{Glob, GlobSet};
+use globset::{GlobBuilder, GlobSet};
 
 use crate::{args::TreeArgs, entry::Entry, sorter::default_sorter};
 
@@ -42,9 +42,9 @@ impl TryFrom<TreeArgs> for TreeOptions {
             list_directories_only: args.list_directories_only,
             print_full_path_prefix: args.print_full_path_prefix,
             max_level: args.max_level,
-            file_include_globset: build_globset(args.file_include_patterns)
+            file_include_globset: build_globset(args.file_include_patterns, args.ignore_case)
                 .context("Failed to build matcher for file include patterns (-P)")?,
-            file_exclude_globset: build_globset(args.file_exclude_patterns)
+            file_exclude_globset: build_globset(args.file_exclude_patterns, args.ignore_case)
                 .context("Failed to build matcher for file exclude patterns (-I)")?,
             respect_gitignore: if args.compat {
                 args.gitignore
@@ -63,7 +63,10 @@ impl TryFrom<TreeArgs> for TreeOptions {
 
 /// Builds a GlobSet matcher from a collection of globs. Returns `Ok(None)` if
 /// the collection of globs is empty.
-fn build_globset(globs: Vec<String>) -> anyhow::Result<Option<Arc<GlobSet>>> {
+fn build_globset(
+    globs: Vec<String>,
+    case_insensitive: bool,
+) -> anyhow::Result<Option<Arc<GlobSet>>> {
     if globs.is_empty() {
         return Ok(None);
     }
@@ -83,7 +86,10 @@ fn build_globset(globs: Vec<String>) -> anyhow::Result<Option<Arc<GlobSet>>> {
         // EXPLANATION: The glob parser used differes from the reference in a
         //              number of ways, including accepting the {} syntax, and
         //              how it handles invalid globs e.g. '*.[txt'
-        let glob = Glob::new(&glob)?;
+        let glob = GlobBuilder::new(&glob)
+            .case_insensitive(case_insensitive)
+            .build()
+            .context("Failed to build glob")?;
         file_include_globset_builder.add(glob);
     }
 

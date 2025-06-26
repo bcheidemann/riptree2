@@ -25,6 +25,9 @@ pub struct TreeArgs {
     #[arg(short = 'I')]
     /// Do not list files that match the given pattern.
     pub file_exclude_patterns: Vec<String>,
+    #[arg(long = "ignore-case")]
+    /// Ignore case when pattern matching.
+    pub ignore_case: bool,
 
     // ============================= File options ==============================
     // TODO
@@ -43,7 +46,7 @@ pub struct TreeArgs {
 
     // ============================ Riptree options ============================
     #[arg(long)]
-    /// Enable compatibility mode. Makes riptree behave the same as tree.
+    /// Enable compatibility mode. Makes riptree2 behave the same as tree.
     pub compat: bool,
     #[arg(long, conflicts_with = "compat")]
     /// Filter rules from .gitignore files are not respected.

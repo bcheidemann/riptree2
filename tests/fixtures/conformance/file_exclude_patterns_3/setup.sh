@@ -3,6 +3,7 @@ set -e
 
 touch excluded
 touch a.pdf
+touch b.PDF
 touch c.doc
 touch d.docx
 touch e.js

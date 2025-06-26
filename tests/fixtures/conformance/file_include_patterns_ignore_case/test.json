@@ -1,0 +1,4 @@
+{
+  "description": "Handle complex file exclude patterns",
+  "args": ["-P", "*.pdf", "--ignore-case"]
+}
