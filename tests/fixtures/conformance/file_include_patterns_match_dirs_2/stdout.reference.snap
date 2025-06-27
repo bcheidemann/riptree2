@@ -1,0 +1,11 @@
+a.include
+├── b.include
+└── c.include
+    ├── a.txt
+    ├── b.include
+    ├── c.include
+    │   └── b.include
+    └── d
+        └── b.include
+
+4 directories, 5 files

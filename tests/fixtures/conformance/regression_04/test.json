@@ -1,0 +1,4 @@
+{
+  "description": "Correctly handle --matchdirs option",
+  "args": ["-P", "dir", "--matchdirs"]
+}

@@ -425,7 +425,6 @@
 ├──  example.qrc
 ├──  example.qss
 ├──  example.query
-├── 󰟔 example.r
 ├──  example.rake
 ├──  example.rar
 ├── 󱦘 example.razor
@@ -656,4 +655,4 @@
 ├──  xorg.conf
 └──  xsettingsd.conf
 
-1 directory, 656 files
+1 directory, 655 files

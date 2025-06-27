@@ -13,9 +13,38 @@ impl AsRef<Entry> for FilteredEntry {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct FilterState {
-    skip_include_matchers: bool,
+    /// This counter is used to reproduce some very unintuitive behaviour in the
+    /// reference implementation. It is not used unless the --compat option is
+    /// set.
+    ///
+    /// In compat mode, if --matchdirs is passed, then include matchers are
+    /// ignored when the parent directory was matched by an include matcher.
+    /// However, this is not applied recursively, so if an ancestor directory
+    /// was already matched, then no more directories can be matched.
+    ///
+    /// There are three possible states:
+    ///
+    /// 0: No ancestor directory was matched
+    ///     - If the entry is a file, and it matches the include patterns, then
+    ///       it will be displayed
+    ///     - If the entry is a directory, it will be displayed
+    ///     - If the entry is a directory and matches the include pattern, the
+    ///       value is incremented by 1 for it's children
+    ///
+    /// 1: The parent directory was matched
+    ///     - If the entry is a file, it will be displayed (include matchers are
+    ///       not checked)
+    ///     - If the entry is a directory, it will be displayed
+    ///     - If the entry is a directory, and it matches the include pattern,
+    ///       the value is incremented by 1 for all children
+    ///
+    /// 2: An ancestor directory was matched
+    ///     - If the entry is a file, and it matches the include patterns, then
+    ///       it will be displayed
+    ///     - If the entry is a directory, it will be displayed
+    matched_dir_depth: u8,
 }
 
 pub struct TreeFilter<'filter> {
@@ -81,14 +110,14 @@ impl<'filter> TreeFilter<'filter> {
             return None;
         }
 
-        let mut filter_state = FilterState::default();
+        let mut filter_state = self.state.clone();
 
         if entry.file_type().is_file() {
             if options.list_directories_only {
                 return None;
             }
 
-            if !self.state.skip_include_matchers
+            if !(self.state.matched_dir_depth == 1)
                 && !self.file_name_included_by_pattern(entry.file_name(), options)
             {
                 return None;
@@ -99,11 +128,17 @@ impl<'filter> TreeFilter<'filter> {
             }
         } else if entry.file_type().is_dir() {
             if options.compat {
-                if !self.state.skip_include_matchers
+                let mut matched_dir = false;
+
+                if (self.state.matched_dir_depth == 0)
                     && options.match_dirs
                     && self.file_name_included_by_pattern(entry.file_name(), options)
                 {
-                    filter_state.skip_include_matchers = true;
+                    matched_dir = true;
+                }
+
+                if filter_state.matched_dir_depth == 1 || matched_dir {
+                    filter_state.matched_dir_depth += 1;
                 }
             } else if !self.file_name_included_by_pattern(entry.file_name(), options) {
                 return None;

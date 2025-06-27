@@ -1,0 +1,20 @@
+.
+└── dir
+    ├── a.txt
+    └── folder
+        └── dir
+            └── folder
+                └── dir
+                    └── folder
+                        └── dir
+                            └── folder
+                                └── dir
+                                    └── folder
+                                        └── dir
+                                            └── folder
+                                                └── dir
+                                                    └── folder
+                                                        └── dir
+                                                            └── folder
+
+17 directories, 1 file

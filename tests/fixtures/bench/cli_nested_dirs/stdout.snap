@@ -425,7 +425,6 @@
 ├──  example.qrc
 ├──  example.qss
 ├──  example.query
-├── 󰟔 example.r
 ├──  example.rake
 ├──  example.rar
 ├── 󱦘 example.razor
@@ -1037,7 +1036,6 @@
 │   ├──  example.qrc
 │   ├──  example.qss
 │   ├──  example.query
-│   ├── 󰟔 example.r
 │   ├──  example.rake
 │   ├──  example.rar
 │   ├── 󱦘 example.razor
@@ -1649,7 +1647,6 @@
 │   │   ├──  example.qrc
 │   │   ├──  example.qss
 │   │   ├──  example.query
-│   │   ├── 󰟔 example.r
 │   │   ├──  example.rake
 │   │   ├──  example.rar
 │   │   ├── 󱦘 example.razor
@@ -2261,7 +2258,6 @@
 │   │   │   ├──  example.qrc
 │   │   │   ├──  example.qss
 │   │   │   ├──  example.query
-│   │   │   ├── 󰟔 example.r
 │   │   │   ├──  example.rake
 │   │   │   ├──  example.rar
 │   │   │   ├── 󱦘 example.razor
@@ -2873,7 +2869,6 @@
 │   │   │   │   ├──  example.qrc
 │   │   │   │   ├──  example.qss
 │   │   │   │   ├──  example.query
-│   │   │   │   ├── 󰟔 example.r
 │   │   │   │   ├──  example.rake
 │   │   │   │   ├──  example.rar
 │   │   │   │   ├── 󱦘 example.razor
@@ -3485,7 +3480,6 @@
 │   │   │   │   │   ├──  example.qrc
 │   │   │   │   │   ├──  example.qss
 │   │   │   │   │   ├──  example.query
-│   │   │   │   │   ├── 󰟔 example.r
 │   │   │   │   │   ├──  example.rake
 │   │   │   │   │   ├──  example.rar
 │   │   │   │   │   ├── 󱦘 example.razor
@@ -4097,7 +4091,6 @@
 │   │   │   │   │   │   ├──  example.qrc
 │   │   │   │   │   │   ├──  example.qss
 │   │   │   │   │   │   ├──  example.query
-│   │   │   │   │   │   ├── 󰟔 example.r
 │   │   │   │   │   │   ├──  example.rake
 │   │   │   │   │   │   ├──  example.rar
 │   │   │   │   │   │   ├── 󱦘 example.razor
@@ -4709,7 +4702,6 @@
 │   │   │   │   │   │   │   ├──  example.qrc
 │   │   │   │   │   │   │   ├──  example.qss
 │   │   │   │   │   │   │   ├──  example.query
-│   │   │   │   │   │   │   ├── 󰟔 example.r
 │   │   │   │   │   │   │   ├──  example.rake
 │   │   │   │   │   │   │   ├──  example.rar
 │   │   │   │   │   │   │   ├── 󱦘 example.razor
@@ -5321,7 +5313,6 @@
 │   │   │   │   │   │   │   │   ├──  example.qrc
 │   │   │   │   │   │   │   │   ├──  example.qss
 │   │   │   │   │   │   │   │   ├──  example.query
-│   │   │   │   │   │   │   │   ├── 󰟔 example.r
 │   │   │   │   │   │   │   │   ├──  example.rake
 │   │   │   │   │   │   │   │   ├──  example.rar
 │   │   │   │   │   │   │   │   ├── 󱦘 example.razor
@@ -5933,7 +5924,6 @@
 │   │   │   │   │   │   │   │   │   ├──  example.qrc
 │   │   │   │   │   │   │   │   │   ├──  example.qss
 │   │   │   │   │   │   │   │   │   ├──  example.query
-│   │   │   │   │   │   │   │   │   ├── 󰟔 example.r
 │   │   │   │   │   │   │   │   │   ├──  example.rake
 │   │   │   │   │   │   │   │   │   ├──  example.rar
 │   │   │   │   │   │   │   │   │   ├── 󱦘 example.razor
@@ -6545,7 +6535,6 @@
 │   │   │   │   │   │   │   │   │   │   ├──  example.qrc
 │   │   │   │   │   │   │   │   │   │   ├──  example.qss
 │   │   │   │   │   │   │   │   │   │   ├──  example.query
-│   │   │   │   │   │   │   │   │   │   ├── 󰟔 example.r
 │   │   │   │   │   │   │   │   │   │   ├──  example.rake
 │   │   │   │   │   │   │   │   │   │   ├──  example.rar
 │   │   │   │   │   │   │   │   │   │   ├── 󱦘 example.razor
@@ -7157,7 +7146,6 @@
 │   │   │   │   │   │   │   │   │   │   │   ├──  example.qrc
 │   │   │   │   │   │   │   │   │   │   │   ├──  example.qss
 │   │   │   │   │   │   │   │   │   │   │   ├──  example.query
-│   │   │   │   │   │   │   │   │   │   │   ├── 󰟔 example.r
 │   │   │   │   │   │   │   │   │   │   │   ├──  example.rake
 │   │   │   │   │   │   │   │   │   │   │   ├──  example.rar
 │   │   │   │   │   │   │   │   │   │   │   ├── 󱦘 example.razor
@@ -7894,4 +7882,4 @@
 ├──  xorg.conf
 └──  xsettingsd.conf
 
-12 directories, 7883 files
+12 directories, 7871 files
