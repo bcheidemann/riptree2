@@ -3,7 +3,8 @@
 │   ├── a.include
 │   └── c
 │       └── a.include
-└── b
-    └── a.include
+├── b
+│   └── a.include
+└── c.include
 
-4 directories, 3 files
+5 directories, 3 files

@@ -4,7 +4,8 @@
 │   ├── b.txt
 │   └── c
 │       └── a.include
-└── b
-    └── a.include
+├── b
+│   └── a.include
+└── c.include
 
-4 directories, 4 files
+5 directories, 4 files

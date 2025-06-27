@@ -10,3 +10,4 @@ touch a.include/c/b.txt
 mkdir b
 touch b/a.include
 touch b/b.txt
+mkdir c.include
