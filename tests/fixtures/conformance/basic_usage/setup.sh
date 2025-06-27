@@ -10,4 +10,5 @@ touch d/a.txt
 touch d/b.txt
 mkdir d/c
 mkdir e
-touch e/a.txt
+mkdir f
+touch f/a.txt

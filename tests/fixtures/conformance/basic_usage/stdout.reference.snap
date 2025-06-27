@@ -7,7 +7,8 @@
 │   ├── a.txt
 │   ├── b.txt
 │   └── c
-└── e
+├── e
+└── f
     └── a.txt
 
-5 directories, 6 files
+6 directories, 6 files
