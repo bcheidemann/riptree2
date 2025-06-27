@@ -1,0 +1,10 @@
+.
+├── a.include
+│   ├── a.include
+│   ├── b.txt
+│   └── c
+│       └── a.include
+└── b
+    └── a.include
+
+4 directories, 4 files

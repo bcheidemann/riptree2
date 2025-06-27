@@ -28,6 +28,7 @@ pub struct TreeArgs {
     #[arg(long = "ignore-case")]
     /// Ignore case when pattern matching.
     pub ignore_case: bool,
+    // TODO: --matchdirs
 
     // ============================= File options ==============================
     // TODO

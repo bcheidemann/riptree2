@@ -1,0 +1,4 @@
+{
+  "description": "Include directories in include pattern matching when --matchdirs option is passed",
+  "args": ["-P", "*.include", "--matchdirs"]
+}
