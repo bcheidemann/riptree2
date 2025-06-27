@@ -1,0 +1,4 @@
+{
+  "description": "Include directories in exlude pattern matching",
+  "args": ["-I", "*.ignore"]
+}

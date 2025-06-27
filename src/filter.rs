@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{ffi::OsStr, path::Path};
 
 use crate::{entry::Entry, ignore::IgnoreDir, options::TreeOptions};
 
@@ -31,6 +31,28 @@ impl<'filter> TreeFilter<'filter> {
         }
     }
 
+    #[inline]
+    fn file_name_included_by_pattern(&self, file_name: &OsStr, options: &TreeOptions) -> bool {
+        if let Some(file_include_globset) = options.file_include_globset.as_ref() {
+            if !file_include_globset.is_match(file_name) {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    #[inline]
+    fn file_name_excluded_by_pattern(&self, file_name: &OsStr, options: &TreeOptions) -> bool {
+        if let Some(file_exclude_globset) = options.file_exclude_globset.as_ref() {
+            if file_exclude_globset.is_match(file_name) {
+                return true;
+            }
+        }
+
+        false
+    }
+
     pub(crate) fn include(&self, entry: &Entry, options: &TreeOptions) -> bool {
         if !options.show_hidden_files && entry.is_hidden() {
             return false;
@@ -41,16 +63,20 @@ impl<'filter> TreeFilter<'filter> {
                 return false;
             }
 
-            if let Some(file_include_globset) = options.file_include_globset.as_ref() {
-                if !file_include_globset.is_match(entry.file_name()) {
-                    return false;
-                }
+            if !self.file_name_included_by_pattern(entry.file_name(), options) {
+                return false;
             }
 
-            if let Some(file_exclude_globset) = options.file_exclude_globset.as_ref() {
-                if file_exclude_globset.is_match(entry.file_name()) {
-                    return false;
-                }
+            if self.file_name_excluded_by_pattern(entry.file_name(), options) {
+                return false;
+            }
+        } else if entry.file_type().is_dir() {
+            if !options.compat && !self.file_name_included_by_pattern(entry.file_name(), options) {
+                return false;
+            }
+
+            if self.file_name_excluded_by_pattern(entry.file_name(), options) {
+                return false;
             }
         }
 

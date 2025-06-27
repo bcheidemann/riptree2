@@ -6,6 +6,7 @@ use globset::{GlobBuilder, GlobSet};
 use crate::{args::TreeArgs, entry::Entry, sorter::default_sorter};
 
 pub struct TreeOptions {
+    pub compat: bool,
     pub show_hidden_files: bool,
     pub list_directories_only: bool,
     pub print_full_path_prefix: bool,
@@ -20,6 +21,7 @@ pub struct TreeOptions {
 impl Default for TreeOptions {
     fn default() -> Self {
         Self {
+            compat: false,
             show_hidden_files: false,
             list_directories_only: false,
             print_full_path_prefix: false,
@@ -38,6 +40,7 @@ impl TryFrom<TreeArgs> for TreeOptions {
 
     fn try_from(args: TreeArgs) -> anyhow::Result<TreeOptions> {
         Ok(Self {
+            compat: args.compat,
             show_hidden_files: args.show_hidden_files,
             list_directories_only: args.list_directories_only,
             print_full_path_prefix: args.print_full_path_prefix,
