@@ -8,7 +8,12 @@ use std::{
 
 use anyhow::Context as _;
 
-use crate::{entry::Entry, filter::TreeFilter, icons::*, options::TreeOptions};
+use crate::{
+    entry::Entry,
+    filter::{FilteredEntry, TreeFilter},
+    icons::*,
+    options::TreeOptions,
+};
 
 pub struct TreeStats {
     options: Arc<TreeOptions>,
@@ -92,12 +97,16 @@ impl<'tree> Tree<'tree> {
         &self.root
     }
 
-    fn enter_dir(&'tree self, dir: Entry, is_last: bool) -> anyhow::Result<Self> {
+    fn enter_dir(&'tree self, dir: FilteredEntry, is_last: bool) -> anyhow::Result<Self> {
+        let FilteredEntry {
+            filter_state,
+            entry: dir,
+        } = dir;
         let new_prefix = if is_last { "    " } else { "│   " };
         Ok(Tree {
             filter: self
                 .filter
-                .enter_dir(&dir, &self.options)
+                .enter_dir(&dir, &self.options, filter_state)
                 .with_context(|| format!("Failed to enter {}", dir.path().to_string_lossy()))?,
             options: self.options.clone(),
             depth: self.depth + 1,
@@ -114,24 +123,24 @@ impl<'tree> Tree<'tree> {
     fn write_entry(
         &self,
         w: &mut impl Write,
-        entry: Entry,
+        entry: FilteredEntry,
         is_last: bool,
         stats: &mut TreeStats,
     ) -> anyhow::Result<()> {
         let file_name = match self.path_prefix.as_ref() {
             Some(path_prefix) => path_prefix
-                .join(entry.file_name())
+                .join(entry.as_ref().file_name())
                 .to_string_lossy()
                 .to_string(),
-            None => entry.file_name().to_string_lossy().to_string(),
+            None => entry.as_ref().file_name().to_string_lossy().to_string(),
         };
-        let link_target = if entry.file_type().is_symlink() {
-            let target = read_link(entry.path()).context("Failed to read link")?;
+        let link_target = if entry.as_ref().file_type().is_symlink() {
+            let target = read_link(entry.as_ref().path()).context("Failed to read link")?;
             format!(" -> {}", target.to_string_lossy())
         } else {
             "".to_string()
         };
-        let icon = self.icon(&entry);
+        let icon = self.icon(entry.as_ref());
         let result = if is_last {
             writeln!(w, "{}└── {icon}{file_name}{link_target}", self.prefix)
         } else {
@@ -139,7 +148,7 @@ impl<'tree> Tree<'tree> {
         };
         result.context("Failed to write entry")?;
 
-        if entry.file_type().is_dir() {
+        if entry.as_ref().file_type().is_dir() {
             stats.dirs += 1;
             let should_enter_dir = if let Some(max_level) = self.options.max_level {
                 max_level - 1 > self.depth
@@ -160,11 +169,9 @@ impl<'tree> Tree<'tree> {
         let mut entries = std::fs::read_dir(&self.root)
             .context("Failed to read directory")?
             .map(|entry| -> anyhow::Result<Entry> { Entry::new(entry?) })
-            .filter(|entry| {
-                entry
-                    .as_ref()
-                    .map(|entry| self.filter.include(entry, &self.options))
-                    .unwrap_or(true)
+            .filter_map(|entry_result| match entry_result {
+                Err(err) => Some(Err(err)),
+                Ok(entry) => self.filter.filter(entry, &self.options).map(Ok),
             })
             .collect::<Vec<_>>();
 
@@ -175,7 +182,7 @@ impl<'tree> Tree<'tree> {
         }
 
         entries.sort_by(|a, b| match (a, b) {
-            (Ok(a), Ok(b)) => (self.options.sorter)(a, b),
+            (Ok(a), Ok(b)) => (self.options.sorter)(a.as_ref(), b.as_ref()),
             (Err(_), Err(_)) => Ordering::Equal,
             (Ok(_), Err(_)) => Ordering::Greater,
             (Err(_), Ok(_)) => Ordering::Less,

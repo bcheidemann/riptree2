@@ -13,6 +13,7 @@ pub struct TreeOptions {
     pub max_level: Option<usize>,
     pub file_include_globset: Option<GlobSet>,
     pub file_exclude_globset: Option<GlobSet>,
+    pub match_dirs: bool,
     pub respect_gitignore: bool,
     pub icons: bool,
     pub sorter: fn(&Entry, &Entry) -> Ordering,
@@ -28,6 +29,7 @@ impl Default for TreeOptions {
             max_level: None,
             file_include_globset: None,
             file_exclude_globset: None,
+            match_dirs: false,
             respect_gitignore: true,
             icons: true,
             sorter: default_sorter,
@@ -49,6 +51,7 @@ impl TryFrom<TreeArgs> for TreeOptions {
                 .context("Failed to build matcher for file include patterns (-P)")?,
             file_exclude_globset: build_globset(args.file_exclude_patterns, args.ignore_case)
                 .context("Failed to build matcher for file exclude patterns (-I)")?,
+            match_dirs: args.compat && args.match_dirs,
             respect_gitignore: if args.compat {
                 args.gitignore
             } else {

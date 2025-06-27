@@ -28,6 +28,11 @@ pub struct TreeArgs {
     #[arg(long = "ignore-case")]
     /// Ignore case when pattern matching.
     pub ignore_case: bool,
+    #[arg(long = "matchdirs", requires = "compat")]
+    /// Include directory names in -P pattern matching.
+    ///
+    /// Requires the --compat option.
+    pub match_dirs: bool,
     // TODO: --matchdirs
 
     // ============================= File options ==============================

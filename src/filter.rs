@@ -2,13 +2,31 @@ use std::{ffi::OsStr, path::Path};
 
 use crate::{entry::Entry, ignore::IgnoreDir, options::TreeOptions};
 
+pub struct FilteredEntry {
+    pub filter_state: FilterState,
+    pub entry: Entry,
+}
+
+impl AsRef<Entry> for FilteredEntry {
+    fn as_ref(&self) -> &Entry {
+        &self.entry
+    }
+}
+
+#[derive(Default)]
+pub struct FilterState {
+    skip_include_matchers: bool,
+}
+
 pub struct TreeFilter<'filter> {
+    state: FilterState,
     ignore_dir: Option<IgnoreDir<'filter>>,
 }
 
 impl<'filter> TreeFilter<'filter> {
     pub(crate) fn new(dir: &Path, options: &TreeOptions) -> anyhow::Result<Self> {
         Ok(Self {
+            state: FilterState::default(),
             ignore_dir: if options.respect_gitignore {
                 Some(IgnoreDir::new(dir)?)
             } else {
@@ -21,13 +39,18 @@ impl<'filter> TreeFilter<'filter> {
         &'filter self,
         dir: &Entry,
         _options: &TreeOptions,
+        state: FilterState,
     ) -> anyhow::Result<Self> {
         if let Some(ignore_dir) = &self.ignore_dir {
             Ok(Self {
+                state,
                 ignore_dir: Some(ignore_dir.enter_dir(dir.path())?),
             })
         } else {
-            Ok(Self { ignore_dir: None })
+            Ok(Self {
+                state,
+                ignore_dir: None,
+            })
         }
     }
 
@@ -53,30 +76,41 @@ impl<'filter> TreeFilter<'filter> {
         false
     }
 
-    pub(crate) fn include(&self, entry: &Entry, options: &TreeOptions) -> bool {
+    pub(crate) fn filter(&self, entry: Entry, options: &TreeOptions) -> Option<FilteredEntry> {
         if !options.show_hidden_files && entry.is_hidden() {
-            return false;
+            return None;
         }
+
+        let mut filter_state = FilterState::default();
 
         if entry.file_type().is_file() {
             if options.list_directories_only {
-                return false;
+                return None;
             }
 
-            if !self.file_name_included_by_pattern(entry.file_name(), options) {
-                return false;
+            if !self.state.skip_include_matchers
+                && !self.file_name_included_by_pattern(entry.file_name(), options)
+            {
+                return None;
             }
 
             if self.file_name_excluded_by_pattern(entry.file_name(), options) {
-                return false;
+                return None;
             }
         } else if entry.file_type().is_dir() {
-            if !options.compat && !self.file_name_included_by_pattern(entry.file_name(), options) {
-                return false;
+            if options.compat {
+                if !self.state.skip_include_matchers
+                    && options.match_dirs
+                    && self.file_name_included_by_pattern(entry.file_name(), options)
+                {
+                    filter_state.skip_include_matchers = true;
+                }
+            } else if !self.file_name_included_by_pattern(entry.file_name(), options) {
+                return None;
             }
 
             if self.file_name_excluded_by_pattern(entry.file_name(), options) {
-                return false;
+                return None;
             }
         }
 
@@ -86,9 +120,12 @@ impl<'filter> TreeFilter<'filter> {
             .map(|ignore_dir| ignore_dir.include(entry.path(), entry.file_type().is_dir()))
             .unwrap_or(true)
         {
-            return false;
+            return None;
         }
 
-        true
+        Some(FilteredEntry {
+            filter_state,
+            entry,
+        })
     }
 }
