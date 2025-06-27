@@ -1,4 +1,4 @@
 {
-  "description": "Handle complex file exclude patterns",
+  "description": "Ignores case when matching exclude patterns if the --ignore-case option is passed",
   "args": ["-I", "*.pdf", "--ignore-case"]
 }
