@@ -5,4 +5,5 @@ pub mod icons;
 pub mod ignore;
 pub mod options;
 pub mod sorter;
+pub mod stats;
 pub mod tree;

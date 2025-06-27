@@ -5,7 +5,8 @@ use clap::Parser as _;
 use riptree2::{
     args::TreeArgs,
     options::TreeOptions,
-    tree::{Tree, TreeStats},
+    stats::{DefaultTreeStats, NoopTreeStats, TreeStats},
+    tree::Tree,
 };
 
 fn main() -> anyhow::Result<()> {
@@ -17,18 +18,33 @@ fn main() -> anyhow::Result<()> {
         args.roots.clone()
     };
 
+    let no_report = args.no_report;
+
     let opts = Arc::new(TreeOptions::try_from(args).context("Failed to validate options")?);
 
-    let mut stats = TreeStats::new(opts.clone());
-
-    for root in &roots {
-        let tree = Tree::new(root.clone().into(), opts.clone())?;
-        println!("{root}");
-        tree.print(&mut stats)?;
+    if no_report {
+        print_tree(&roots, opts.clone(), &mut NoopTreeStats)?;
+    } else {
+        let mut stats = DefaultTreeStats::new(opts.clone());
+        print_tree(&roots, opts.clone(), &mut stats)?;
+        println!();
+        stats.print()?;
     }
 
-    println!();
-    stats.print()?;
+    Ok(())
+}
+
+#[inline]
+fn print_tree(
+    roots: &Vec<String>,
+    opts: Arc<TreeOptions>,
+    stats: &mut impl TreeStats,
+) -> anyhow::Result<()> {
+    for root in roots {
+        let tree = Tree::new(root.clone().into(), opts.clone())?;
+        println!("{root}");
+        tree.print(stats)?;
+    }
 
     Ok(())
 }

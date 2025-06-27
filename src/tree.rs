@@ -13,58 +13,8 @@ use crate::{
     filter::{FilteredEntry, TreeFilter},
     icons::*,
     options::TreeOptions,
+    stats::TreeStats,
 };
-
-pub struct TreeStats {
-    options: Arc<TreeOptions>,
-    dirs: usize,
-    files: usize,
-}
-
-impl TreeStats {
-    pub fn new(options: Arc<TreeOptions>) -> Self {
-        Self {
-            options,
-            dirs: 0,
-            files: 0,
-        }
-    }
-
-    #[inline(always)]
-    pub fn dirs(&self) -> usize {
-        self.dirs
-    }
-
-    #[inline(always)]
-    pub fn files(&self) -> usize {
-        self.files
-    }
-
-    pub fn write(&self, w: &mut impl Write) -> anyhow::Result<()> {
-        if self.options.list_directories_only {
-            match self.dirs() {
-                1 => writeln!(w, "1 directory, 1 file"),
-                dirs => writeln!(w, "{dirs} directories"),
-            }?;
-
-            return Ok(());
-        }
-
-        match (self.dirs(), self.files()) {
-            (1, 1) => writeln!(w, "1 directory, 1 file"),
-            (dirs, 1) => writeln!(w, "{dirs} directories, 1 file"),
-            (1, files) => writeln!(w, "1 directory, {files} files"),
-            (dirs, files) => writeln!(w, "{dirs} directories, {files} files"),
-        }?;
-
-        Ok(())
-    }
-
-    pub fn print(&self) -> anyhow::Result<()> {
-        let mut writer = std::io::stdout();
-        self.write(&mut writer)
-    }
-}
 
 pub struct Tree<'tree> {
     filter: TreeFilter<'tree>,
@@ -125,7 +75,7 @@ impl<'tree> Tree<'tree> {
         w: &mut impl Write,
         entry: FilteredEntry,
         is_last: bool,
-        stats: &mut TreeStats,
+        stats: &mut impl TreeStats,
     ) -> anyhow::Result<()> {
         let file_name = match self.path_prefix.as_ref() {
             Some(path_prefix) => path_prefix
@@ -149,7 +99,7 @@ impl<'tree> Tree<'tree> {
         result.context("Failed to write entry")?;
 
         if entry.as_ref().file_type().is_dir() {
-            stats.dirs += 1;
+            stats.count_dir();
             let should_enter_dir = if let Some(max_level) = self.options.max_level {
                 max_level - 1 > self.depth
             } else {
@@ -159,13 +109,13 @@ impl<'tree> Tree<'tree> {
                 self.enter_dir(entry, is_last)?.write(w, stats)?;
             }
         } else {
-            stats.files += 1;
+            stats.count_file();
         }
 
         Ok(())
     }
 
-    pub fn write(&self, w: &mut impl Write, stats: &mut TreeStats) -> anyhow::Result<()> {
+    pub fn write(&self, w: &mut impl Write, stats: &mut impl TreeStats) -> anyhow::Result<()> {
         let mut entries = std::fs::read_dir(&self.root)
             .context("Failed to read directory")?
             .map(|entry| -> anyhow::Result<Entry> { Entry::new(entry?) })
@@ -178,7 +128,7 @@ impl<'tree> Tree<'tree> {
         // Don't ask... for some reason tree counts the root dir, but only if it
         // is not empty.
         if self.depth == 0 && !entries.is_empty() {
-            stats.dirs += 1;
+            stats.count_dir();
         }
 
         entries.sort_by(|a, b| match (a, b) {
@@ -203,7 +153,7 @@ impl<'tree> Tree<'tree> {
         Ok(())
     }
 
-    pub fn print(&self, stats: &mut TreeStats) -> anyhow::Result<()> {
+    pub fn print(&self, stats: &mut impl TreeStats) -> anyhow::Result<()> {
         let mut writer = std::io::stdout();
         self.write(&mut writer, stats)
     }

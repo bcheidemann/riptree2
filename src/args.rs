@@ -33,7 +33,13 @@ pub struct TreeArgs {
     ///
     /// Requires the --compat option.
     pub match_dirs: bool,
-    // TODO: --matchdirs
+    // TODO: --metafirst
+    // TODO: --prune
+    // TODO: --info
+    // TODO: --infofile
+    #[arg(long = "noreport")]
+    /// Turn off file/directory count at end of tree listing.
+    pub no_report: bool,
 
     // ============================= File options ==============================
     // TODO
