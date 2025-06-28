@@ -117,7 +117,7 @@ impl<'filter> TreeFilter<'filter> {
                 return None;
             }
 
-            if !(self.state.matched_dir_depth == 1)
+            if self.state.matched_dir_depth != 1
                 && !self.file_name_included_by_pattern(entry.file_name(), options)
             {
                 return None;
