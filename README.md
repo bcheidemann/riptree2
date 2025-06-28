@@ -1,8 +1,8 @@
 riptree2 (rt)
 -------------
 
-![QA Workflow](https://github.com/bcheidemann/riptree2/actions/workflows/qa.yml/badge.svg)
-![Crates.io Version](https://img.shields.io/crates/v/riptree2)
+[![QA Workflow](https://github.com/bcheidemann/riptree2/actions/workflows/qa.yml/badge.svg)](https://github.com/bcheidemann/riptree2/actions/workflows/qa.yml)
+[![Crates.io Version](https://img.shields.io/crates/v/riptree2)](https://crates.io/crates/riptree2)
 
 riptree2 is a Rust rewrite of the Unix tree command. It aims to be a drop in
 replacement (`alias tree="rt --compat"`) with some quality of life improvements,
@@ -28,7 +28,7 @@ disables all quality of life improvements.
 
 ## Performance
 
-![performance comparison of riptree2 with reference implementation](https://bcheidemann.github.io/riptree2/criterion/cli_nested_dirs/report/violin.svg)
+[![performance comparison of riptree2 with reference implementation](https://bcheidemann.github.io/riptree2/criterion/cli_nested_dirs/report/violin.svg)](https://bcheidemann.github.io/riptree2/criterion/report/index.html)
 
 The performance of riptree2 should be at least as good as the reference tree
 implementation. Currently, riptree2 is approximately 2 to 3 times faster than
