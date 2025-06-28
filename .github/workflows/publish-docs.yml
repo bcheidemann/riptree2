@@ -38,6 +38,7 @@ jobs:
       - name: Build docs
         run: |
           cp -r target/criterion docs/criterion
+          cat README.md >> docs/index.md
       - name: Commit docs
         run: |
           git add .
