@@ -42,7 +42,8 @@ jobs:
       - name: Build docs
         run: |
           cp -r target/criterion docs/criterion
-          echo "\n\n" >> docs/index.md
+          echo "
+          " >> docs/index.md
           cat README.md >> docs/index.md
       - name: Commit docs
         run: |
