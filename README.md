@@ -28,6 +28,8 @@ disables all quality of life improvements.
 
 ## Performance
 
+![performance comparison of riptree2 with reference implementation](https://bcheidemann.github.io/riptree2/criterion/cli_nested_dirs/report/violin.svg)
+
 The performance of riptree2 should be at least as good as the reference tree
 implementation. Currently, riptree2 is approximately 2 to 3 times faster than
 reference implementation.
