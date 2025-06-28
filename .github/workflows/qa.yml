@@ -1,0 +1,27 @@
+name: QA
+
+on:
+  push:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+      - name: Setup Rust
+        run: |
+          rustup update stable && rustup default stable
+      - name: Run tests
+        run: |
+          cargo test
+      - name: Check formatting
+        run: |
+          cargo fmt --check
+      - name: Check with Clippy
+        run: |
+          cargo clippy -- -D warnings
+      - name: Run benchmarks
+        continue-on-error: true # TODO: Remove this - benchmark snapshots are currently failing
+        run: |
+          cargo bench
