@@ -3,10 +3,6 @@ name: QA
 on:
   push:
 
-concurrency:
-  group: ${{ github.workflow }}-main
-  cancel-in-progress: true
-
 jobs:
   tests:
     runs-on: ubuntu-latest
