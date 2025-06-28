@@ -10,7 +10,9 @@ such as respecting ignore files by default.
 riptree2 is under active development. The basic tree functionality has been
 implemented, but most options are not supported yet.
 
-# Backward Compatibility
+# Project Goals
+
+## Backward Compatibility
 
 riptree2 aims to produce identical output to the Unix tree command by default.
 We achieve this through a suite of integration tests, which compare the output
@@ -20,6 +22,14 @@ There are some cases where the output of riptree2 will differ slightly from the
 output of the Unix tree command. For example, riptree2 automatically respects
 ignore files. For maximum backward compatibility, use the `--compat` flag, which
 disables all quality of life improvements.
+
+## Performance
+
+The performance of riptree2 should be at least as good as the reference tree
+implementation. Currently, riptree2 is approximately 2 to 3 times faster than
+reference implementation.
+
+We publish our benchmark results [here](https://bcheidemann.github.io/riptree2/criterion/report/).
 
 # Features
 

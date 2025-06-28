@@ -1,0 +1,14 @@
+title: riptree2
+email: ben@heidemann.dev
+author: Ben Heidemann
+description: |
+  riptree2 is a Rust rewrite of the Unix tree command with some quality of life
+  improvements.
+baseurl: "/riptree2" # the subpath of your site, e.g. /blog
+url: "https://bcheidemann.github.io"
+github_org: bcheidemann
+github_repo: riptree2
+
+# Build settings
+markdown: kramdown
+theme: minima
