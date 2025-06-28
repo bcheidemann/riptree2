@@ -1,5 +1,9 @@
+
 riptree2 (rt)
 -------------
+
+![QA Workflow](https://github.com/bcheidemann/riptree2/actions/workflows/qa.yml/badge.svg)
+![Crates.io Version](https://img.shields.io/crates/v/riptree2)
 
 riptree2 is a Rust rewrite of the Unix tree command. It aims to be a drop in
 replacement (`alias tree="rt --compat"`) with some quality of life improvements,
