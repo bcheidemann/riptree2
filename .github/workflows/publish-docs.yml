@@ -20,14 +20,22 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-      - name: Create docs branch from main
+      - name: Reset docs branch to main
         run: |
           git fetch
           git reset --hard origin/main
+      - name: Setup Rust
+        run: |
+          rustup update stable && rustup default stable
+      - name: Run tests
+        run: |
+          cargo test
+      - name: Run benchmarks
+        run: |
+          cargo bench
       - name: Build docs
         run: |
-          mkdir docs
-          echo "Hello World" > docs/index.html
+          cp -r target/criterion docs/criterion
       - name: Commit docs
         run: |
           git add .
