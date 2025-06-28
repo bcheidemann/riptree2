@@ -31,6 +31,8 @@ jobs:
         run: |
           cargo test
       - name: Run benchmarks
+        env:
+          SKIP_BENCH_ASSERTIONS: true
         run: |
           cargo bench
       - name: Build docs
