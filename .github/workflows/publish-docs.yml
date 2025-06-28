@@ -12,18 +12,14 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: docs
       - name: Set up Git user
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
       - name: Create docs branch from main
         run: |
-          git switch --orphan docs
-          git rm -rf .
-          git read-tree --prefix=. -u main
-          git checkout main -- .
-          git commit -m "reset to main"
+          git reset --hard origin/main
       - name: Build docs
         run: |
           mkdir docs
@@ -34,4 +30,4 @@ jobs:
           git commit -m "docs: build docs" || echo "No changes to commit"
       - name: Force push to docs branch
         run: |
-          git push origin HEAD:docs --force
+          git push --force
