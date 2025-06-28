@@ -4,6 +4,7 @@ use std::{
     io::BufReader,
     path::Path,
     process::{Command, Stdio},
+    time::Duration,
 };
 
 use assert_cmd::assert::OutputAssertExt;
@@ -147,7 +148,7 @@ fn bench_cli_nested_dirs(c: &mut Criterion) {
 
 criterion_group! {
     name = benches;
-    config = Criterion::default();
+    config = Criterion::default().measurement_time(Duration::from_secs(30));
     targets = bench_cli_all_file_types, bench_cli_nested_dirs
 }
 criterion_main!(benches);
