@@ -12,6 +12,7 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           ref: docs
       - name: Set up Git user
         run: |
@@ -19,6 +20,7 @@ jobs:
           git config user.email "github-actions@github.com"
       - name: Create docs branch from main
         run: |
+          git fetch
           git reset --hard origin/main
       - name: Build docs
         run: |
