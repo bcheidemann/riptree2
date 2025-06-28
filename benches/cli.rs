@@ -28,20 +28,20 @@ fn run_cli_benchmark<M: Measurement>(
     benchmark_id: BenchmarkId,
     snapshot_name: &str,
 ) {
+    let test_dir = format!("tests/fixtures/bench/{test_name}");
+    let test_dir = Path::new(&test_dir);
+
+    let test_description: TestDescription = {
+        let path = test_dir.join("test.json");
+        let file = File::open(path).unwrap();
+        let reader = BufReader::new(file);
+        serde_json::from_reader(reader).unwrap()
+    };
+
+    let test_working_dir = TestWorkingDir::new(test_dir);
+
     if std::env::var_os("SKIP_BENCH_ASSERTIONS").is_none() {
-        let test_dir = format!("tests/fixtures/bench/{test_name}");
-        let test_dir = Path::new(&test_dir);
-
-        let test_description: TestDescription = {
-            let path = test_dir.join("test.json");
-            let file = File::open(path).unwrap();
-            let reader = BufReader::new(file);
-            serde_json::from_reader(reader).unwrap()
-        };
-
         eprintln!("[TEST DESCRIPTION]\n{}\n\n", test_description.description);
-
-        let test_working_dir = TestWorkingDir::new(test_dir);
 
         let sut_output = Command::new(binary)
             .current_dir(&test_working_dir)
