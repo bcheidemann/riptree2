@@ -1,3 +1,5 @@
+use std::ffi::OsString;
+
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -40,6 +42,11 @@ pub struct TreeArgs {
     #[arg(long = "noreport")]
     /// Turn off file/directory count at end of tree listing.
     pub no_report: bool,
+    // TODO: --charset
+    // TODO: --filelimit
+    #[arg(short = 'o')]
+    /// Output to file instead of stdout.
+    pub output_to_file: Option<OsString>,
 
     // ============================= File options ==============================
     // TODO

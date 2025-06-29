@@ -1,0 +1,5 @@
+{
+  "description": "Basic usage",
+  "args": ["-o", "out.txt"],
+  "assert_file_contents": ["out.txt"]
+}
