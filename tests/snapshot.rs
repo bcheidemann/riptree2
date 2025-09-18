@@ -12,6 +12,7 @@ struct TestDescription {
 }
 
 #[fixtures(["tests/fixtures/snapshot/*", "!*.skip"])]
+#[test]
 fn test(test_dir: &Path) {
     let test_description: TestDescription = {
         let path = test_dir.join("test.json");
@@ -44,5 +45,6 @@ fn test(test_dir: &Path) {
 }
 
 // #[fixtures(["tests/fixtures/snapshot/*.skip"])]
+// #[test]
 // #[ignore]
 // fn skipped_test(_: &Path) {}
