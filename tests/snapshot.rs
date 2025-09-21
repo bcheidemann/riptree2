@@ -10,10 +10,12 @@ struct TestDescription {
     description: String,
     args: Vec<String>,
 }
-
-#[fixtures(["tests/fixtures/snapshot/*", "!*.skip"])]
+#[fixtures(
+    ["tests/fixtures/snapshot/*"],
+    ignore = [],
+)]
 #[test]
-fn test(test_dir: &Path) {
+fn snapshot(test_dir: &Path) {
     let test_description: TestDescription = {
         let path = test_dir.join("test.json");
         let file = File::open(path).unwrap();
@@ -47,4 +49,4 @@ fn test(test_dir: &Path) {
 // #[fixtures(["tests/fixtures/snapshot/*.skip"])]
 // #[test]
 // #[ignore]
-// fn skipped_test(_: &Path) {}
+// fn snapshot_skipped(_: &Path) {}

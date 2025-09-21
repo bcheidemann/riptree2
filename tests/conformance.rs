@@ -18,9 +18,14 @@ struct TestDescription {
     assert_file_contents: Option<Vec<String>>,
 }
 
-#[fixtures(["tests/fixtures/conformance/*", "!*.skip"])]
+#[fixtures(
+    ["tests/fixtures/conformance/*"],
+    ignore = [
+        { path = "tests/fixtures/conformance/regression_02", reason = "investigation required" }
+    ],
+)]
 #[test]
-fn test(test_dir: &Path) {
+fn conformance(test_dir: &Path) {
     let test_description: TestDescription = {
         let path = test_dir.join("test.json");
         let file = File::open(path).unwrap();
@@ -138,8 +143,3 @@ fn test(test_dir: &Path) {
         }
     }
 }
-
-#[fixtures(["tests/fixtures/conformance/*.skip"])]
-#[test]
-#[ignore]
-fn skipped_test(_: &Path) {}

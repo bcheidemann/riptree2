@@ -293,19 +293,20 @@ checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
 name = "fixtures"
-version = "2.0.0"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11336f613cab2724bb958ba012fb6710c57a71481affa4856ed8793ba04256e7"
+checksum = "6a65d1d83fdf066d765019d7166f234934f0738da5b0524cfe3127c023ed5174"
 dependencies = [
  "fixtures_proc",
 ]
 
 [[package]]
 name = "fixtures_proc"
-version = "2.0.0"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bce4f22c0b36297a9d2bedacb31edf42b7a3f557c4e9e796d2bd4a9901ab7e2"
+checksum = "c994753f04b7ef0ce57ce3294addbdd4fc68e4a0bc25270250d25fe8f37a839e"
 dependencies = [
+ "globset",
  "globwalk",
  "proc-macro2",
  "quote",

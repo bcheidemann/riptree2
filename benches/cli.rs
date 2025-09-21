@@ -8,10 +8,8 @@ use std::{
 };
 
 use assert_cmd::assert::OutputAssertExt;
-use criterion::{
-    BenchmarkGroup, BenchmarkId, Criterion, criterion_group, criterion_main,
-    measurement::Measurement,
-};
+use criterion::{BenchmarkGroup, BenchmarkId, Criterion, criterion_main, measurement::Measurement};
+use fixtures::fixtures;
 use serde::Deserialize;
 use test_utils::{TestWorkingDir, snapshot::assert_snapshot};
 
@@ -130,25 +128,23 @@ fn criterion_benchmark_reference<M: Measurement>(c: &mut BenchmarkGroup<M>, test
     );
 }
 
-fn bench_cli_all_file_types(c: &mut Criterion) {
-    let test_name = "cli_all_file_types";
+#[fixtures(["tests/fixtures/bench/*"])]
+fn bench(fixture_path: &Path, c: &mut Criterion) {
+    let test_name = fixture_path.file_name().unwrap().to_str().unwrap();
     let mut group = c.benchmark_group(test_name);
     criterion_benchmark_riptree2(&mut group, test_name);
     criterion_benchmark_riptree2_compat(&mut group, test_name);
     criterion_benchmark_reference(&mut group, test_name);
 }
 
-fn bench_cli_nested_dirs(c: &mut Criterion) {
-    let test_name = "cli_nested_dirs";
-    let mut group = c.benchmark_group(test_name);
-    criterion_benchmark_riptree2(&mut group, test_name);
-    criterion_benchmark_riptree2_compat(&mut group, test_name);
-    criterion_benchmark_reference(&mut group, test_name);
+pub fn benches() {
+    let mut criterion = Criterion::default()
+        .measurement_time(Duration::from_secs(30))
+        .configure_from_args();
+
+    for bench in bench::EXPANSIONS {
+        bench(&mut criterion);
+    }
 }
 
-criterion_group! {
-    name = benches;
-    config = Criterion::default().measurement_time(Duration::from_secs(30));
-    targets = bench_cli_all_file_types, bench_cli_nested_dirs
-}
 criterion_main!(benches);
